@@ -9,10 +9,10 @@ import numpy as np
 
 cfg =  {
     "dataset" : {
-        "jsons": ["datasets/backgrounds_MC_ttbar_2018.json",
+        "jsons": ["datasets/signal_ttHTobb.json",
                     ],
         "filter" : {
-            "samples": ["TTToSemiLeptonic"],
+            "samples": ["ttHTobb"],
             "samples_exclude" : [],
             "year": ['2018']
         },
@@ -44,10 +44,10 @@ cfg =  {
     },
 
     # Cuts and plots settings
-    "finalstate" : "semileptonic",
-    "skim": [get_nObj_min(4, 15., "Jet"),
-             get_HLTsel("semileptonic")],
-    "preselections" : [semileptonic_presel_nobtag],
+    "finalstate" : "dilepton",
+    "skim": [get_nObj_min(1, 250., "FatJet"),
+             get_HLTsel("dilepton")],
+    "preselections" : [passthrough],
     "categories": {
         "baseline": [passthrough],
         "1b" : [ get_nBtagEq(1, coll="BJetGood")],
