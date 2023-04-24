@@ -9,6 +9,7 @@ import numpy as np
 
 cfg =  {
     "dataset" : {
+
         "jsons": ["datasets/signal_ttHTobb_redirector.json",
                     ],
         "filter" : {
@@ -31,6 +32,7 @@ cfg =  {
         "queue"          : "microcentury",
         "walltime"       : "00:40:00",
         "mem_per_worker" : "4GB", # GB
+        "disk_per_worker" : "1GB", # GB
         "exclusive"      : False,
         "chunk"          : 200000,
         "retries"        : 50,
