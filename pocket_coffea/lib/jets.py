@@ -220,9 +220,9 @@ def jet_correction_correctionlib(
 
 
 def jet_selection(events, Jet, finalstate):
-
     jets = events[Jet]
     cuts = object_preselection[finalstate][Jet]
+    goodEcalCalib = events["Flag"].ecalBadCalibFilter
     # Only jets that are more distant than dr to ALL leptons are tagged as good jets
     leptons = events["LeptonGood"]
     # Mask for  jets not passing the preselection
@@ -244,8 +244,11 @@ def jet_selection(events, Jet, finalstate):
 
     elif Jet == "FatJet":
         # Apply the msd and preselection cuts
-        mask_msd = (events.FatJet.msoftdrop > cuts["msd"])
-        mask_good_jets = mask_presel & mask_msd
+        #mask_msd = (events.FatJet.msoftdrop > cuts["msd"])
+        
+        ecalMask = ak.broadcast_arrays(goodEcalCalib,jets.pt)
+        ecalMask = ecalMask[0]
+        mask_good_jets = mask_presel & ecalMask
 
     return jets[mask_good_jets], mask_good_jets
 

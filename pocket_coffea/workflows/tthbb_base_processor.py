@@ -66,9 +66,9 @@ class ttHbbBaseProcessor(BaseProcessorABC):
                 self.events.ElectronGood, self.events.MuonGood
             )
 
-        # self.events["FatJetGood"], self.jetGoodMask = jet_selection(
-        #     self.events, "FatJet", self.cfg.finalstate
-        # )
+        self.events["FatJetGood"], self.jetGoodMask = jet_selection(
+            self.events, "FatJet", self.cfg.finalstate
+        )
 
     def count_objects(self, variation):
         self.events["nMuonGood"] = ak.num(self.events.MuonGood)
@@ -78,7 +78,7 @@ class ttHbbBaseProcessor(BaseProcessorABC):
         )
         self.events["nJetGood"] = ak.num(self.events.JetGood)
         self.events["nBJetGood"] = ak.num(self.events.BJetGood)
-        # self.events["nfatjet"]   = ak.num(self.events.FatJetGood)
+        self.events["nfatjet"]   = ak.num(self.events.FatJetGood)
 
     # Function that defines common variables employed in analyses and save them as attributes of `events`
     def define_common_variables_before_presel(self, variation):

@@ -3,23 +3,29 @@
 object_preselection = {
     "dilepton": {
         "Muon": {
-            "pt": 8,
+            "pt": 25,
             "eta": 2.4,
             "iso": 0.25, #PFIsoLoose
             "id": "looseId",
         },
         "Electron": {
-            "pt": 12,
+            "pt": 25,
             "eta": 2.4,
             "iso": 0.06,
             "id": "mvaFall17V2Iso_WPL",
         },
         "Jet": {
             "dr": 0.4,
-            "pt": 250,
+            "pt": 30,
             "eta": 2.4,
             "jetId": 2,
             "puId": {"wp": "L", "value": 4, "maxpt": 50.0},
+        },
+        "FatJet": {
+            "dr": 0.8,
+            "pt": 200,
+            "eta": 2.4,
+            "jetId": 2
         },
     },
     "semileptonic": {

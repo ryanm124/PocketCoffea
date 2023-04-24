@@ -9,7 +9,7 @@ import numpy as np
 
 cfg =  {
     "dataset" : {
-        "jsons": ["datasets/signal_ttHTobb.json",
+        "jsons": ["datasets/signal_ttHTobb_redirector.json",
                     ],
         "filter" : {
             "samples": ["ttHTobb"],
@@ -45,7 +45,7 @@ cfg =  {
 
     # Cuts and plots settings
     "finalstate" : "dilepton",
-    "skim": [get_nObj_min(1, 250., "FatJet"),
+    "skim": [get_nObj_min(1, 200., "FatJet"),
              get_HLTsel("dilepton")],
     "preselections" : [passthrough],
     "categories": {
@@ -107,6 +107,7 @@ cfg =  {
         **jet_hists(name="bjet",coll="BJetGood", pos=0),
         **jet_hists(name="bjet",coll="BJetGood", pos=1),
         **jet_hists(name="bjet",coll="BJetGood", pos=2),
+        **fatjet_hists(name="fatjet",coll="FatJetGood"),
 
         # 2D plots
         "jet_eta_pt_leading": HistConf(
