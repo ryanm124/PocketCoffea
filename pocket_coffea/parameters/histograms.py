@@ -217,7 +217,7 @@ default_axis_settings = {
     },
     'fatjet_tau1': {
         "field": "tau1",
-        "bins": 20,
+        "bins": 80,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -226,6 +226,7 @@ default_axis_settings = {
     'fatjet_tau2': {
         "field": "tau2",
         "bins": 20,
+        "bins": 80,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -233,7 +234,7 @@ default_axis_settings = {
     },
     'fatjet_tau3': {
         "field": "tau3",
-        "bins": 20,
+        "bins": 80,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -241,7 +242,7 @@ default_axis_settings = {
     },
     'fatjet_tau4': {
         "field": "tau4",
-        "bins": 20,
+        "bins": 80,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -313,7 +314,7 @@ default_axis_settings = {
     },
     'fatjet_deepTagMD_HbbvsQCD': {
         "field": "deepTagMD_HbbvsQCD",
-        "bins": 20,
+        "bins": 80,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -321,7 +322,7 @@ default_axis_settings = {
     },
     'fatjet_deepTagMD_bbvsLight': {
         "field": "deepTagMD_bbvsLight",
-        "bins": 20,
+        "bins": 80,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -329,7 +330,7 @@ default_axis_settings = {
     },
     'fatjet_deepTag_H': {
         "field": "deepTag_H",
-        "bins": 20,
+        "bins": 80,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),

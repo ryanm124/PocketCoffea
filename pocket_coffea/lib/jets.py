@@ -223,15 +223,23 @@ def jet_selection(events, jet_type, params, leptons_collection=""):
         mask_lepton_cleaning = ak.prod(dR_jets_lep > cuts["dr_lepton"], axis=2) == 1
 
     if jet_type == "Jet":
+
         # Selection on PUid. Only available in Run2 UL, thus we need to determine which sample we run over:
-        if events.metadata["year"] in ['2016_PreVFP', '2016_PostVFP','2017','2018']:
-            mask_jetpuid = (jets.puId >= cuts["puId"]["value"]) | (
-                jets.pt >= cuts["puId"]["maxpt"]
-            )
-        else:
-            mask_jetpuid = True
-  
-        mask_good_jets = mask_presel & mask_lepton_cleaning & mask_jetpuid
+        #if events.metadata["year"] in ['2016_PreVFP', '2016_PostVFP','2017','2018']:
+        #    mask_jetpuid = (jets.puId >= cuts["puId"]["value"]) | (
+        #        jets.pt >= cuts["puId"]["maxpt"]
+        #    )
+        #else:
+        #    mask_jetpuid = True
+        # 
+        #mask_good_jets = mask_presel & mask_lepton_cleaning & mask_jetpuid
+
+        mask_jetpuid = (jets.puId >= cuts["puId"]["value"]) | (
+            jets.pt >= cuts["puId"]["maxpt"]
+        )
+        dR_jets_fatJets = jets.metric_table(events["FatJetGood"])
+        mask_fatjet_cleaning = ak.prod(dR_jets_fatJets > 0.8, axis=2) == 1
+        mask_good_jets = mask_presel & mask_lepton_cleaning & mask_jetpuid & mask_fatjet_cleaning
 
 
     elif jet_type == "FatJet":
@@ -241,10 +249,12 @@ def jet_selection(events, jet_type, params, leptons_collection=""):
         ecalMask = ecalMask[0]
         mask_good_jets = mask_presel & mask_lepton_cleaning & ecalMask
 
+
     elif jet_type == "GenFatJet":
         dR_jets_fatJets = jets.metric_table(events["GenJetGood"])
         mask_fatjet_cleaning = ak.prod(dR_jets_fatJets > 0.8, axis=2) == 1
         mask_good_jets = mask_presel & mask_fatjet_cleaning
+
 
     return jets[mask_good_jets], mask_good_jets
 
@@ -349,4 +359,23 @@ def get_dijet(jets):
     dijet = ak.zip(fields, with_name="PtEtaPhiMCandidate")
 
     return dijet
+
+
+def bbtagging(Jet, btag, WP, isOld):
+    if(WP=="L"):
+        if(not isOld):
+            return Jet[Jet[btag["bbtagging_algorithm"]] > btag["bbtagging_WP_L"]]
+        else:
+            return Jet[Jet[btag["bbtagging_algorithmOld"]] > btag["bbtagging_WP_L"]]
+    if(WP=="M"):
+        if(not isOld):
+            return Jet[Jet[btag["bbtagging_algorithm"]] > btag["bbtagging_WP_M"]]
+        else:
+            return Jet[Jet[btag["bbtagging_algorithmOld"]] > btag["bbtagging_WP_M"]]
+    if(WP=="T"):
+        if(not isOld):
+            return Jet[Jet[btag["bbtagging_algorithm"]] > btag["bbtagging_WP_T"]]
+        else:
+            return Jet[Jet[btag["bbtagging_algorithmOld"]] > btag["bbtagging_WP_T"]]
+
 
