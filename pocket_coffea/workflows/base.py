@@ -491,7 +491,8 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
                                                self.events,
                                                self._categories,
                                                subsample_mask=self._subsamples[self._sample].get_mask(subs),
-                                               weights_manager=self.weights_manager
+                                               weights_manager=self.weights_manager,
+                                               dataset=self._dataset
                                                )
                     fname = (self.events.behavior["__events_factory__"]._partition_key.replace( "/", "_" )
                         + ".parquet")
@@ -509,7 +510,8 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
                                                    self.events,
                                                    self._categories,
                                                    subsample_mask=self._subsamples[self._sample].get_mask(subs),
-                                                   weights_manager=self.weights_manager
+                                                   weights_manager=self.weights_manager,
+                                                   dataset=self._dataset
                                                    )
                     }
         else:
@@ -519,7 +521,8 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
                                                self.events,
                                                self._categories,
                                                subsample_mask=None,
-                                               weights_manager=self.weights_manager
+                                               weights_manager=self.weights_manager,
+                                               dataset=self._dataset
                                                )
                 # building the file name
                 fname = (self.events.behavior["__events_factory__"]._partition_key.replace( "/", "_" )
@@ -534,7 +537,8 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
                     self.events,
                     self._categories,
                     subsample_mask = None,
-                    weights_manager=self.weights_manager
+                    weights_manager=self.weights_manager,
+                    dataset=self._dataset
                 ) }
 
     def fill_column_accumulators_extra(self, variation):
@@ -686,7 +690,7 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
         #################
         self.load_metadata()
         self.load_metadata_extra()
-
+        
         self.nEvents_initial = self.nevents
         self.output['cutflow']['initial'][self._dataset] = self.nEvents_initial
         if self._isMC:

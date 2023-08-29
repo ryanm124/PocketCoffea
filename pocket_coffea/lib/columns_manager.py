@@ -31,7 +31,7 @@ class ColumnsManager:
         for cat in categories:
             self.cfg[cat].append(cfg)
 
-    def fill_columns_accumulators(self, events, cuts_masks, subsample_mask=None, weights_manager=None):
+    def fill_columns_accumulators(self, events, cuts_masks, subsample_mask=None, weights_manager=None, dataset=None):
         self.output = {}
         for category, outarrays in self.cfg.items():
             self.output[category] = {}
@@ -76,6 +76,9 @@ class ColumnsManager:
                     ] = column_accumulator(ak.to_numpy(N, allow_missing=False))
                 # looping on the columns
                 for col in outarray.columns:
+                    if "v7" in dataset:
+                        if col == "btagDDBvLV2":
+                            col = "btagDDBvL"
                     if outarray.flatten and data.ndim > 1:
                         if outarray.fill_none:
                             out = ak.fill_none(
@@ -103,7 +106,7 @@ class ColumnsManager:
                     )
         return self.output
 
-    def fill_ak_arrays(self, events, cuts_masks, subsample_mask=None, weights_manager=None):
+    def fill_ak_arrays(self, events, cuts_masks, subsample_mask=None, weights_manager=None, dataset=None):
         self.output = {}
         for category, outarrays in self.cfg.items():
             if len(outarrays)==0:
@@ -148,6 +151,9 @@ class ColumnsManager:
 
                 # looping on the columns
                 for col in outarray.columns:
+                    if "v7" in dataset:
+                        if col == "btagDDBvLV2":
+                            col = "btagDDBvL"
                     if outarray.flatten and data.ndim > 1:
                         if outarray.fill_none:
                             out = ak.fill_none(
