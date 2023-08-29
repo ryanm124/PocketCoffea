@@ -199,11 +199,12 @@ def jet_correction_correctionlib(
     else:
         return jets_corrected
 
-
 def jet_selection(events, jet_type, params, leptons_collection=""):
 
     jets = events[jet_type]
     cuts = params.object_preselection[jet_type]
+
+    goodEcalCalib = events["Flag"].ecalBadCalibFilter
     # Only jets that are more distant than dr to ALL leptons are tagged as good jets
     # Mask for  jets not passing the preselection
     mask_presel = (
@@ -220,15 +221,38 @@ def jet_selection(events, jet_type, params, leptons_collection=""):
         mask_jetpuid = (jets.puId >= cuts["puId"]["value"]) | (
             jets.pt >= cuts["puId"]["maxpt"]
         )
-        mask_good_jets = mask_presel & mask_lepton_cleaning & mask_jetpuid
+        dR_jets_fatJets = jets.metric_table(events["FatJetGood"])
+        mask_fatjet_cleaning = ak.prod(dR_jets_fatJets > 0.8, axis=2) == 1
+        mask_good_jets = mask_presel & mask_lepton_cleaning & mask_jetpuid & mask_fatjet_cleaning
 
     elif jet_type == "FatJet":
         # Apply the msd and preselection cuts
-        mask_msd = events.FatJet.msoftdrop > cuts["msd"]
-        mask_good_jets = mask_presel & mask_msd
+        #mask_msd = events.FatJet.msoftdrop > cuts["msd"]
+        ecalMask = ak.broadcast_arrays(goodEcalCalib,jets.pt)
+        ecalMask = ecalMask[0]
+        mask_good_jets = mask_presel & mask_lepton_cleaning & ecalMask
+
+
 
     return jets[mask_good_jets], mask_good_jets
 
 
 def btagging(Jet, btag):
     return Jet[Jet[btag["btagging_algorithm"]] > btag["btagging_WP"]]
+
+def bbtagging(Jet, btag, WP, isOld):
+    if(WP=="L"):
+        if(not isOld):
+            return Jet[Jet[btag["bbtagging_algorithm"]] > btag["bbtagging_WP_L"]]
+        else:
+            return Jet[Jet[btag["bbtagging_algorithmOld"]] > btag["bbtagging_WP_L"]]
+    if(WP=="M"):
+        if(not isOld):
+            return Jet[Jet[btag["bbtagging_algorithm"]] > btag["bbtagging_WP_M"]]
+        else:
+            return Jet[Jet[btag["bbtagging_algorithmOld"]] > btag["bbtagging_WP_M"]]
+    if(WP=="T"):
+        if(not isOld):
+            return Jet[Jet[btag["bbtagging_algorithm"]] > btag["bbtagging_WP_T"]]
+        else:
+            return Jet[Jet[btag["bbtagging_algorithmOld"]] > btag["bbtagging_WP_T"]]
