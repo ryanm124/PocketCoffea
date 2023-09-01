@@ -198,6 +198,14 @@ default_axis_settings = {
         "lim": (-7, 0),
         'label': r"FatJet $\rho$",
     },
+    'fatjet_rhoQCD': {
+        "field": "rhoQCD",
+        "bins": 100,
+        "start": -3,
+        'stop': 0.5,
+        "lim": (-3, 0.5),
+        'label': r"FatJet $\rho$QCD",
+    },
     'fatjet_tau21': {
         "field": "tau21",
         "bins": 80,

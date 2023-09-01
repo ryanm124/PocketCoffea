@@ -722,6 +722,7 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
         #########################
 
         self.process_extra_after_skim()
+    
         # Create the HistManager and ColumnManager before systematic variations
         self.define_custom_axes_extra()
         self.define_histograms()
@@ -751,8 +752,10 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
             ##########################
             # Customization point for derived workflows after preselection cuts
             self.define_common_variables_after_presel(variation)
-            self.process_extra_after_presel(variation)
-
+            self.events["FatJetGood"] = self.process_extra_after_presel(variation,"FatJetGood")
+            self.events["BBFatJetGoodT"] = self.process_extra_after_presel(variation,"BBFatJetGoodT")
+            self.events["BBFatJetGoodM"] = self.process_extra_after_presel(variation,"BBFatJetGoodM")
+            self.events["BBFatJetGoodL"] = self.process_extra_after_presel(variation,"BBFatJetGoodL")
             # This function applies all the cut functions in the cfg file
             # Each category is an AND of some cuts.
             self.define_categories(variation)
