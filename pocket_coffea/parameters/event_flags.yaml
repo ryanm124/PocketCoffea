@@ -35,7 +35,8 @@ event_flags :
     - "EcalDeadCellTriggerPrimitiveFilter"
     - "BadPFMuonFilter"
      # "BadChargedCandidateFilter" "ecalBadCalibFilter
-
+  "2016":
+    - "eeBadScFilter"
 
 event_flags_data: 
   "2018":

@@ -44,7 +44,7 @@ if __name__ == '__main__':
     # Setting up the output dir
     os.makedirs(args.outputdir, exist_ok=True)
     outfile = os.path.join(
-        args.outputdir, "output_{}.coffea"
+        args.outputdir, "output_"+args.cfg[:-3] +"_{}.coffea"
     )
     
     # Prepare logging

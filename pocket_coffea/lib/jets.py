@@ -241,18 +241,66 @@ def btagging(Jet, btag):
     return Jet[Jet[btag["btagging_algorithm"]] > btag["btagging_WP"]]
 
 def bbtagging(Jet, btag, WP, isOld):
+    #if self.params.btagging.working_point[self._year] in Jet : # to prevent breaks when bbtagging algorithm branch isn't written, this happens when nFatJet=0 for event  
     if(WP=="L"):
-        if(not isOld):
-            return Jet[Jet[btag["bbtagging_algorithm"]] > btag["bbtagging_WP_L"]]
-        else:
-            return Jet[Jet[btag["bbtagging_algorithmOld"]] > btag["bbtagging_WP_L"]]
+      if(not isOld):
+       
+       # Check if the required keys exist in the btag dictionary
+        #if btag["bbtagging_algorithm"] in Jet:
+        #if  btag["bbtagging_algorithm"] in Jet and len(Jet) >0:
+            # Filter Jet objects based on the keys if they exist
+        return Jet[Jet[btag["bbtagging_algorithm"]] > btag["bbtagging_WP_L"]]
+        #else:
+        #    # Handle the case when the required keys are missing
+        #    print("Error: 'bbtagging_algorithm' or 'bbtagging_WP_T' key is missing in btag configuration.")
+        #    print(Jet)
+        #    print(btag["bbtagging_algorithm"])
+        #    
+        #    return Jet
+      else:
+        return Jet[Jet[btag["bbtagging_algorithmOld"]] > btag["bbtagging_WP_L"]]
     if(WP=="M"):
-        if(not isOld):
-            return Jet[Jet[btag["bbtagging_algorithm"]] > btag["bbtagging_WP_M"]]
-        else:
-            return Jet[Jet[btag["bbtagging_algorithmOld"]] > btag["bbtagging_WP_M"]]
+      if(not isOld):
+       
+       # Check if the required keys exist in the btag dictionary
+        #if btag["bbtagging_algorithm"] in Jet:
+        #if  btag["bbtagging_algorithm"] in Jet and len(Jet) >0:
+            # Filter Jet objects based on the keys if they exist
+        return Jet[Jet[btag["bbtagging_algorithm"]] > btag["bbtagging_WP_M"]]
+        #else:
+        #    # Handle the case when the required keys are missing
+        #    print("Error: 'bbtagging_algorithm' or 'bbtagging_WP_T' key is missing in btag configuration.")
+        #    print(Jet)
+        #    print(btag["bbtagging_algorithm"])
+        #    
+        #    return Jet
+      else:
+        return Jet[Jet[btag["bbtagging_algorithmOld"]] > btag["bbtagging_WP_M"]]
     if(WP=="T"):
-        if(not isOld):
-            return Jet[Jet[btag["bbtagging_algorithm"]] > btag["bbtagging_WP_T"]]
-        else:
-            return Jet[Jet[btag["bbtagging_algorithmOld"]] > btag["bbtagging_WP_T"]]
+      if(not isOld):
+       
+       # Check if the required keys exist in the btag dictionary
+        #if btag["bbtagging_algorithm"] in Jet:
+        #if  btag["bbtagging_algorithm"] in Jet and len(Jet) >0:
+            # Filter Jet objects based on the keys if they exist
+        return Jet[Jet[btag["bbtagging_algorithm"]] > btag["bbtagging_WP_T"]]
+        #else:
+        #    # Handle the case when the required keys are missing
+        #    print("Error: 'bbtagging_algorithm' or 'bbtagging_WP_T' key is missing in btag configuration.")
+        #    print(Jet)
+        #    print(btag["bbtagging_algorithm"])
+        #    
+        #    return Jet
+      else:
+        return Jet[Jet[btag["bbtagging_algorithmOld"]] > btag["bbtagging_WP_T"]]
+        # Check if the required keys exist in the btag dictionary
+        #if btag["bbtagging_algorithmOld"] in Jet:
+        #if  btag["bbtagging_algorithmOld"] in Jet and len(Jet) >0:
+        #    # Filter Jet objects based on the keys if they exist
+        #    
+        #else:
+        #    # Handle the case when the required keys are missing
+        #    print("!!!Error: 'bbtagging_algorithmOld' or 'bbtagging_WP_T' key is missing in btag configuration.")
+        #    print(Jet)
+        #    print(btag["bbtagging_algorithm"])
+        #    return Jet
