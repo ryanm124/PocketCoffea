@@ -158,6 +158,10 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
         self._skim_masks = PackedSelection()
         mask_flags = np.ones(self.nEvents_initial, dtype=bool)
         flags = self.params.event_flags[self._year]
+        if self._isMC:
+            flags = self.params.event_flags[self._year]
+        else:
+            flags = self.params.event_flags_data[self._year]      
         if not self._isMC:
             flags += self.params.event_flags_data[self._year]
         for flag in flags:
@@ -795,10 +799,15 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
             ##########################
             # Customization point for derived workflows after preselection cuts
             self.define_common_variables_after_presel(variation)
-            self.process_extra_after_presel(variation)
+
+            self.events["FatJetGood"] = self.process_extra_after_presel(variation,"FatJetGood")
             #if "BBFatJetGoodT" in self.events:
             #if len(self.events["FatJetGood"]) > 0:
             #if self.events["nFatJet"][0] > 0 : 
+            self.events["BBFatJetGoodT"] = self.process_extra_after_presel(variation,"BBFatJetGoodT")
+            self.events["BBFatJetGoodM"] = self.process_extra_after_presel(variation,"BBFatJetGoodM")
+            self.events["BBFatJetGoodL"] = self.process_extra_after_presel(variation,"BBFatJetGoodL")
+
             #else:
             #    self.events["BBFatJetGoodM"] = []
             #    self.events["BBFatJetGoodL"] = []                

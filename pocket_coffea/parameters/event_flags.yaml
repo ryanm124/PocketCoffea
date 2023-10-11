@@ -35,10 +35,41 @@ event_flags :
     - "EcalDeadCellTriggerPrimitiveFilter"
     - "BadPFMuonFilter"
      # "BadChargedCandidateFilter" "ecalBadCalibFilter
+
+  "2022_preEE":
+    - "goodVertices"
+    - "globalSuperTightHalo2016Filter"
+    - "HBHENoiseFilter"
+    - "HBHENoiseIsoFilter"
+    - "EcalDeadCellTriggerPrimitiveFilter"
+    - "BadPFMuonFilter"
+  "2022_postEE":
+    - "goodVertices"
+    - "globalSuperTightHalo2016Filter"
+    - "HBHENoiseFilter"
+    - "HBHENoiseIsoFilter"
+    - "EcalDeadCellTriggerPrimitiveFilter"
+    - "BadPFMuonFilter"
+  "2023_preBPix":
+    - "goodVertices"
+    - "globalSuperTightHalo2016Filter"
+    - "HBHENoiseFilter"
+    - "HBHENoiseIsoFilter"
+    - "EcalDeadCellTriggerPrimitiveFilter"
+    - "BadPFMuonFilter"
+  "2023_postBPix":
+    - "goodVertices"
+    - "globalSuperTightHalo2016Filter"
+    - "HBHENoiseFilter"
+    - "HBHENoiseIsoFilter"
+    - "EcalDeadCellTriggerPrimitiveFilter"
+    - "BadPFMuonFilter"
   "2016":
     - "eeBadScFilter"
 
-event_flags_data: 
+
+event_flags_data:
+
   "2018":
     - "eeBadScFilter"
   "2017":
