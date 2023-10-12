@@ -158,10 +158,6 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
         self._skim_masks = PackedSelection()
         mask_flags = np.ones(self.nEvents_initial, dtype=bool)
         flags = self.params.event_flags[self._year]
-        if self._isMC:
-            flags = self.params.event_flags[self._year]
-        else:
-            flags = self.params.event_flags_data[self._year]      
         if not self._isMC:
             flags += self.params.event_flags_data[self._year]
         for flag in flags:
