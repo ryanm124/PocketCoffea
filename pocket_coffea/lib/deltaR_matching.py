@@ -5,20 +5,17 @@ import numba
 
 
 @numba.njit
-def get_matching_pairs_indices(idx_1, idx_2, builder, builder2):
-    for ev_q, ev_j in zip(idx_1, idx_2):
+def get_matching_pairs_indices(idx_1, idx_2, builder, builder2, isFatJetVector):
+    for ev_q, ev_j, ev_fat in zip(idx_1, idx_2, isFatJetVector):
         builder.begin_list()
         builder2.begin_list()
         q_done = []
         j_done = []
-        for i, (q, j) in enumerate(zip(ev_q, ev_j)):
+        for i, (q, j, fat) in enumerate(zip(ev_q, ev_j, ev_fat)):
             if q not in q_done:
-                if j not in j_done:
-                    builder.append(i)
-                    q_done.append(q)
-                    j_done.append(j)
-                else:
-                    builder2.append(i)
+                builder.append(i)
+                q_done.append(q)
+                j_done.append(j)
         builder.end_list()
         builder2.end_list()
     return builder, builder2
@@ -42,29 +39,38 @@ def get_matching_objects_indices_padnone(
         builder2.begin_list()
         builder3.begin_list()
         row1_length = len(ev1_match)
-        missed = 0
+        currentQuark = 0
         for i in range(nobj2):
             # looping on the max dimension of collection 2 and checking if the current index i
             # is matched, e.g is part of ev2_match vector.
-            if i in ev2_match:
+            count = 0
+            for j in ev2_match:
+                if j==i:
+                    count+=1
+            builder.begin_list()
+            builder3.begin_list()
+            if count>0:
                 # if this index is matched, then take the ev1_match and deltaR results
                 # print(i, row1_length)
                 builder2.append(i)
-                if i - missed < row1_length:
-                    builder.append(ev1_match[i - missed])
-                    builder3.append(dr[i - missed])
+                for j in range(count):
+                    if currentQuark < row1_length:
+                        builder.append(ev1_match[currentQuark])
+                        builder3.append(dr[currentQuark])
+                        currentQuark+=1
             else:
                 # If it is missing a None is added and the missed  is incremented
                 # so that the next matched one will get the correct element assigned.
                 builder.append(None)
                 builder2.append(None)
                 builder3.append(None)
-                missed += 1
+
+            builder.end_list()
+            builder3.end_list()
         builder.end_list()
         builder2.end_list()
         builder3.end_list()
     return builder, builder2, builder3
-
 
 def metric_pt(obj, obj2):
     return abs(obj.pt - obj2.pt)
@@ -97,12 +103,16 @@ def object_matching(obj, obj2, dr_min, dpt_max=None, return_indices=False):
     # Get the indexing to sort the pairs sorted by deltaR without any cut
     idx_pairs_sorted = ak.argsort(deltaR, axis=1)
     pairs = ak.argcartesian([obj, obj2])
+    print("pairs:",pairs[0])
     # Sort all the collection over pairs by deltaR
     pairs_sorted = pairs[idx_pairs_sorted]
+    print("pairs_sorted",pairs_sorted[0])
     deltaR_sorted = deltaR[idx_pairs_sorted]
     maskDR_sorted = maskDR[idx_pairs_sorted]
     idx_obj, idx_obj2 = ak.unzip(pairs_sorted)
-
+    print("type idx_obj",type(idx_obj[0][0]))
+    isFatJet = obj2.isFatJet[idx_obj2]
+    print("isFatJet",isFatJet[0])
     # Now get only the matching indices by looping over the pairs in order of deltaR.
     # The result contains the list of pairs that are considered valid
     _idx_matched_pairs, _idx_missed_pairs = get_matching_pairs_indices(
@@ -110,13 +120,17 @@ def object_matching(obj, obj2, dr_min, dpt_max=None, return_indices=False):
         ak.without_parameters(idx_obj2, behavior={}),
         ak.ArrayBuilder(),
         ak.ArrayBuilder(),
+        ak.without_parameters(isFatJet, behavior={}),
     )
     idx_matched_pairs = _idx_matched_pairs.snapshot()
+    print("idx_matched_pairs",idx_matched_pairs[0])
     # The indices related to the invalid jet matches are skipped
     # idx_missed_pairs  = _idx_missed_pairs.snapshot()
     # Now let's get get the indices of the objects corresponding to the valid pairs
     idx_matched_obj = idx_obj[idx_matched_pairs]
     idx_matched_obj2 = idx_obj2[idx_matched_pairs]
+    print("idx_matched_obj",idx_matched_obj[0])
+    print("idx_matched_obj2",idx_matched_obj2[0])
     # Getting also deltaR and maskDR of the valid pairs
     deltaR_matched = deltaR_sorted[idx_matched_pairs]
     maskDR_matched = maskDR_sorted[idx_matched_pairs]
@@ -134,6 +148,7 @@ def object_matching(obj, obj2, dr_min, dpt_max=None, return_indices=False):
     # Here we apply the deltaR + pT requirements on the objects and on deltaR
     idx_obj_masked = idx_obj_obj2sorted[maskDR_obj2sorted]
     idx_obj2_masked = idx_obj2_obj2sorted[maskDR_obj2sorted]
+    print("idx_obj2_masked",idx_obj2_masked[0])
     # Getting also the deltaR of the masked pairs
     deltaR_masked = deltaR_obj2sorted[maskDR_obj2sorted]
     # N.B. We are still working only with indices not final objects
@@ -159,9 +174,44 @@ def object_matching(obj, obj2, dr_min, dpt_max=None, return_indices=False):
     idx_obj2_padnone = _idx_obj2_padnone.snapshot()
     deltaR_padnone = _deltaR_padnone.snapshot()
 
+    print("idx_obj_padnone",idx_obj_padnone[0])
+    
+    jetsBQuarks = []
+    jetsCQuarks = []
+    jetsFromTop = []
+    for i_event in range(len(idx_obj_padnone)):
+        jetBQuarks = []
+        jetCQuarks = []
+        jetFromTop = []
+        for j in range(len(idx_obj_padnone[i_event])):
+            numBQuarks = 0
+            numCQuarks = 0
+            isFromTop = 0
+            for idx in idx_obj_padnone[i_event][j]:
+                if(idx==None): continue
+                quarkId = obj.pdgId[i_event][idx]
+                print("quarkId",quarkId)
+                quarkFromTop = obj.from_top[i_event][idx]
+                if(abs(quarkId)==5): numBQuarks+=1
+                if(abs(quarkId)==4): numCQuarks+=1
+                if(quarkFromTop==1): isFromTop = 1
+            jetBQuarks.append(numBQuarks)
+            jetCQuarks.append(numCQuarks)
+            jetFromTop.append(isFromTop)
+    
+        jetsBQuarks.append(jetBQuarks)
+        jetsCQuarks.append(jetCQuarks)
+        jetsFromTop.append(jetFromTop)
+        
+    print("jetsBQuarks:",jetsBQuarks[0])
+    print("jetsCQuarks:",jetsCQuarks[0])
+    print("jetsFromTop:",jetsFromTop[0])
+    print("idx_obj2_padnone",idx_obj2_padnone[0])
+    
+            
+
     # Finally the objects are sliced through the padded indices
     # In this way, to a None entry in the indices will correspond a None entry in the object
-    matched_obj = obj[idx_obj_padnone]
     matched_obj2 = obj2[idx_obj2_padnone]
 
     if return_indices:
@@ -175,7 +225,7 @@ def object_matching(obj, obj2, dr_min, dpt_max=None, return_indices=False):
             deltaR_masked,
         )
     else:
-        return matched_obj, matched_obj2, deltaR_padnone
+        return matched_obj2, jetsBQuarks, jetsCQuarks, jetsFromTop
 
 
 ##################################################################3

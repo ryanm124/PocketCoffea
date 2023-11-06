@@ -752,13 +752,10 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
             ##########################
             # Customization point for derived workflows after preselection cuts
             self.define_common_variables_after_presel(variation)
-            self.events["FatJetGood"] = self.process_extra_after_presel(variation,"FatJetGood")
+            self.process_extra_after_presel(variation)
             #if "BBFatJetGoodT" in self.events:
             #if len(self.events["FatJetGood"]) > 0:
             #if self.events["nFatJet"][0] > 0 : 
-            self.events["BBFatJetGoodT"] = self.process_extra_after_presel(variation,"BBFatJetGoodT")
-            self.events["BBFatJetGoodM"] = self.process_extra_after_presel(variation,"BBFatJetGoodM")
-            self.events["BBFatJetGoodL"] = self.process_extra_after_presel(variation,"BBFatJetGoodL")
             #else:
             #    self.events["BBFatJetGoodM"] = []
             #    self.events["BBFatJetGoodL"] = []                

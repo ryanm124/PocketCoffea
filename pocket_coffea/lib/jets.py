@@ -210,8 +210,13 @@ def jet_selection(events, jet_type, params, leptons_collection=""):
     mask_presel = (
         (jets.pt > cuts["pt"])
         & (np.abs(jets.eta) < cuts["eta"])
-        & (jets.jetId >= cuts["jetId"])
     )
+
+    if(jet_type!="GenJet" and jet_type!="GenFatJet"):
+        mask_presel = ((mask_presel) & (jets.jetId >= cuts["jetId"]))
+    
+    mask_good_jets = mask_presel
+
     # Lepton cleaning
     if leptons_collection != "":
         dR_jets_lep = jets.metric_table(events[leptons_collection])
@@ -232,7 +237,10 @@ def jet_selection(events, jet_type, params, leptons_collection=""):
         ecalMask = ecalMask[0]
         mask_good_jets = mask_presel & mask_lepton_cleaning & ecalMask
 
-
+    elif jet_type == "GenFatJet":
+        dR_jets_fatJets = jets.metric_table(events["GenJetGood"])
+        mask_fatjet_cleaning = ak.prod(dR_jets_fatJets > 0.8, axis=2) == 1
+        mask_good_jets = mask_presel & mask_fatjet_cleaning
 
     return jets[mask_good_jets], mask_good_jets
 
