@@ -351,6 +351,10 @@ class Shape:
 
     @property
     def samples_mc(self):
+        #print("samples")
+        #print(self.samples)
+        #print("sample_is_MC")
+        #print(self.sample_is_MC)
         return list(filter(lambda d: self.sample_is_MC[d], self.samples))
 
     def group_samples(self):
