@@ -24,7 +24,23 @@ from pocket_coffea.utils.network import get_proxy_path
 from pocket_coffea.utils.logging import setup_logging
 
 def load_run_options(cfg):
-    return 0
+    config_module =  utils.path_import(cfg)
+    try:
+        config = config_module.cfg
+        logging.info(config)
+        config.run_options = config_module.run_options
+        config.save_config(args.outputdir)
+
+    except AttributeError as e:
+        print("Error: ", e)
+        raise("The provided configuration module does not contain a `cfg` attribute of type Configurator. Please check your configuration!")
+
+    if not isinstance(config, Configurator):
+        raise("The configuration module attribute `cfg` is not of type Configurator. Please check yuor configuration!")
+
+    #TODO improve the run options config
+    return config, config_module.run_options
+
 
 
 if __name__ == '__main__':
@@ -60,20 +76,8 @@ if __name__ == '__main__':
     print("Loading the configuration file...")
     if args.cfg[-3:] == ".py":
         # Load the script
-        config_module =  utils.path_import(args.cfg)
-        try:
-            config = config_module.cfg
-            logging.info(config)
-            config.save_config(args.outputdir)
-
-        except AttributeError as e:
-            print("Error: ", e)
-            raise("The provided configuration module does not contain a `cfg` attribute of type Configurator. Please check your configuration!")
-
-        if not isinstance(config, Configurator):
-            raise("The configuration module attribute `cfg` is not of type Configurator. Please check yuor configuration!")
-        run_options = config_module.run_options
-
+        config, run_options = load_run_options(args.cfg)
+        
     elif args.cfg[-4:] == ".pkl":
         # WARNING: This has to be tested!!
         config = cloudpickle.load(open(args.cfg,"rb"))
