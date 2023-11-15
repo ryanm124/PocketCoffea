@@ -5,15 +5,15 @@ import math
 default_axis_settings = {
     'muon_pt': {
         "field": "pt",
-        "bins": 50,
+        "bins": 30,
         "start": 0,
-        'stop': 500,
-        "lim": (0, 500),
+        'stop': 300,
+        "lim": (0, 300),
         'label': "$p_{T}^{\mu}$ [GeV]",
     },
     'muon_eta': {
         "field": "eta",
-        "bins": 50,
+        "bins": 30,
         "start": -2.5,
         'stop': 2.5,
         "lim": (-2.5, 2.5),
@@ -21,7 +21,7 @@ default_axis_settings = {
     },
     'muon_phi': {
         "field": "phi",
-        "bins": 64,
+        "bins": 32,
         "start": -math.pi,
         'stop': math.pi,
         "lim": (-math.pi, math.pi),
@@ -29,15 +29,15 @@ default_axis_settings = {
     },
     'electron_pt': {
         "field": "pt",
-        "bins": 50,
+        "bins": 30,
         "start": 0,
-        'stop': 500,
-        "lim": (0, 500),
+        'stop': 300,
+        "lim": (0, 300),
         'label': "$p_{T}^{e}$ [GeV]",
     },
     'electron_eta': {
         "field": "eta",
-        "bins": 50,
+        "bins": 30,
         "start": -2.5,
         'stop': 2.5,
         "lim": (-2.5, 2.5),
@@ -80,7 +80,7 @@ default_axis_settings = {
     },
     'electron_phi': {
         "field": "phi",
-        "bins": 64,
+        "bins": 32,
         "start": -math.pi,
         'stop': math.pi,
         "lim": (-math.pi, math.pi),
@@ -88,15 +88,15 @@ default_axis_settings = {
     },
     'lepton_pt': {
         "field": "pt",
-        "bins": 50,
+        "bins": 30,
         "start": 0,
-        'stop': 500,
-        "lim": (0, 500),
+        'stop': 300,
+        "lim": (0, 300),
         'label': "$p_{T}^{\ell}$ [GeV]",
     },
     'lepton_eta': {
         "field": "eta",
-        "bins": 50,
+        "bins": 30,
         "start": -2.5,
         'stop': 2.5,
         "lim": (-2.5, 2.5),
@@ -104,7 +104,7 @@ default_axis_settings = {
     },
     'lepton_phi': {
         "field": "phi",
-        "bins": 64,
+        "bins": 32,
         "start": -math.pi,
         'stop': math.pi,
         "lim": (-math.pi, math.pi),
@@ -123,12 +123,12 @@ default_axis_settings = {
         "bins": 100,
         "start": 0,
         'stop': 1000,
-        "lim": (0, 500),
+        "lim": (0, 300),
         'label': "$p_{T}^{j}$ [GeV]",
     },
     'jet_eta': {
         "field": "eta",
-        "bins": 50,
+        "bins": 30,
         "start": -2.5,
         'stop': 2.5,
         "lim": (-2.5, 2.5),
@@ -136,7 +136,7 @@ default_axis_settings = {
     },
     'jet_phi': {
         "field": "phi",
-        "bins": 64,
+        "bins": 32,
         "start": -math.pi,
         'stop': math.pi,
         "lim": (-math.pi, math.pi),
@@ -144,7 +144,7 @@ default_axis_settings = {
     },
     'jet_btagDeepFlavB': {
         "field": "btagDeepFlavB",
-        "bins": 50,
+        "bins": 30,
         "start": 0.0,
         'stop': 1.0,
         "lim": (0, 1),
@@ -160,7 +160,7 @@ default_axis_settings = {
     },
     'fatjet_eta': {
         "field": "eta",
-        "bins": 50,
+        "bins": 30,
         "start": -2.5,
         'stop': 2.5,
         "lim": (-2.5, 2.5),
@@ -168,7 +168,7 @@ default_axis_settings = {
     },
     'fatjet_phi': {
         "field": "phi",
-        "bins": 64,
+        "bins": 32,
         "start": -math.pi,
         'stop': math.pi,
         "lim": (-math.pi, math.pi),
@@ -176,18 +176,18 @@ default_axis_settings = {
     },
     'fatjet_mass': {
         "field": "mass",
-        "bins": 100,
+        "bins": 50,
         "start": 0,
-        'stop': 1000,
-        "lim": (0, 1000),
+        'stop': 400,
+        "lim": (0, 400),
         'label': "FatJet mass [GeV]",
     },
     'fatjet_msoftdrop': {
         "field": "msoftdrop",
-        "bins": 100,
+        "bins": 50,
         "start": 0,
-        'stop': 1000,
-        "lim": (0, 1000),
+        'stop': 400,
+        "lim": (0, 400),
         'label': r"FatJet $m_{SD}$ [GeV]",
     },
     'fatjet_rho': {
@@ -208,7 +208,7 @@ default_axis_settings = {
     },
     'fatjet_tau21': {
         "field": "tau21",
-        "bins": 80,
+        "bins": 20,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -216,7 +216,7 @@ default_axis_settings = {
     },
     'fatjet_tau1': {
         "field": "tau1",
-        "bins": 80,
+        "bins": 20,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -224,7 +224,7 @@ default_axis_settings = {
     },
     'fatjet_tau2': {
         "field": "tau2",
-        "bins": 80,
+        "bins": 20,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -232,7 +232,7 @@ default_axis_settings = {
     },
     'fatjet_tau3': {
         "field": "tau3",
-        "bins": 80,
+        "bins": 20,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -240,7 +240,7 @@ default_axis_settings = {
     },
     'fatjet_tau4': {
         "field": "tau4",
-        "bins": 80,
+        "bins": 20,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -248,7 +248,7 @@ default_axis_settings = {
     },
     'fatjet_btagDDCvLV2': {
         "field": "btagDDCvLV2",
-        "bins": 80,
+        "bins": 20,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -256,7 +256,7 @@ default_axis_settings = {
     },
     'fatjet_btagDDCvBV2': {
         "field": "btagDDCvBV2",
-        "bins": 80,
+        "bins": 20,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -264,7 +264,7 @@ default_axis_settings = {
     },
     'fatjet_particleNetMD_Xbb': {
         "field": "particleNetMD_Xbb",
-        "bins": 80,
+        "bins": 20,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -272,7 +272,7 @@ default_axis_settings = {
     },
     'fatjet_particleNetMD_Xcc': {
         "field": "particleNetMD_Xcc",
-        "bins": 80,
+        "bins": 20,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -280,7 +280,7 @@ default_axis_settings = {
     },
     'fatjet_particleNetMD_Xbb_QCD': {
         "field": "particleNetMD_Xbb_QCD",
-        "bins": 80,
+        "bins": 20,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -288,7 +288,7 @@ default_axis_settings = {
     },
     'fatjet_particleNetMD_Xcc_QCD': {
         "field": "particleNetMD_Xcc_QCD",
-        "bins": 80,
+        "bins": 20,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -296,7 +296,7 @@ default_axis_settings = {
     },
     'fatjet_deepTagMD_ZHbbvsQCD': {
         "field": "deepTagMD_ZHbbvsQCD",
-        "bins": 80,
+        "bins": 20,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -304,7 +304,7 @@ default_axis_settings = {
     },
     'fatjet_deepTagMD_ZHccvsQCD': {
         "field": "deepTagMD_ZHccvsQCD",
-        "bins": 80,
+        "bins": 20,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -312,7 +312,7 @@ default_axis_settings = {
     },
     'fatjet_deepTagMD_HbbvsQCD': {
         "field": "deepTagMD_HbbvsQCD",
-        "bins": 80,
+        "bins": 20,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -320,7 +320,7 @@ default_axis_settings = {
     },
     'fatjet_deepTagMD_bbvsLight': {
         "field": "deepTagMD_bbvsLight",
-        "bins": 80,
+        "bins": 20,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -328,7 +328,7 @@ default_axis_settings = {
     },
     'fatjet_deepTag_H': {
         "field": "deepTag_H",
-        "bins": 80,
+        "bins": 20,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -336,7 +336,7 @@ default_axis_settings = {
     },
     'fatjet_btagHbb': {
         "field": "btagHbb",
-        "bins": 80,
+        "bins": 20,
         "start": 0,
         'stop': 1,
         "lim": (0, 1),
@@ -344,10 +344,10 @@ default_axis_settings = {
     },
     'sv_summass': {
         "field": "summass",
-        "bins": 200,
+        "bins": 50,
         "start": 0,
-        'stop': 1000,
-        "lim": (0, 500),
+        'stop': 300,
+        "lim": (0, 300),
         'label': r"$\sum({m_{SV}})$ [GeV]",
     },
     'sv_logsummass': {
@@ -363,7 +363,7 @@ default_axis_settings = {
         "bins": 200,
         "start": 0,
         'stop': 1000,
-        "lim": (0, 500),
+        "lim": (0, 300),
         'label': r"$m_{SV}^{proj}$ [GeV]",
     },
     'sv_logprojmass': {
@@ -379,7 +379,7 @@ default_axis_settings = {
         "bins": 200,
         "start": 0,
         'stop': 1000,
-        "lim": (0, 500),
+        "lim": (0, 300),
         'label': r"$m_{SV,1}$ [GeV]",
     },
     'sv_logsv1mass': {
@@ -395,7 +395,7 @@ default_axis_settings = {
         "bins": 200,
         "start": 0,
         'stop': 1000,
-        "lim": (0, 500),
+        "lim": (0, 300),
         'label': r"$\sum({m^{corr}_{SV}})$ [GeV]",
     },
     'sv_logsumcorrmass': {
@@ -408,15 +408,15 @@ default_axis_settings = {
     },
     'parton_pt': {
         "field": "pt",
-        "bins": 150,
+        "bins": 130,
         "start": 0,
-        'stop': 1500,
-        "lim": (0, 500),
+        'stop': 1300,
+        "lim": (0, 300),
         'label': "$p_{T}^{parton}$ [GeV]",
     },
     'parton_eta': {
         "field": "eta",
-        "bins": 80,
+        "bins": 20,
         "start": -4,
         'stop': 4,
         "lim": (-4, 4),
@@ -440,7 +440,7 @@ default_axis_settings = {
     },
     'parton_pdgId': {
         "field": "pdgId",
-        "bins": 50,
+        "bins": 30,
         "start": -25,
         'stop': 25,
         "lim": (0, 1),
@@ -456,7 +456,7 @@ default_axis_settings = {
     },
     'met_phi': {
         "field": "phi",
-        "bins": 64,
+        "bins": 32,
         "start": -math.pi,
         'stop': math.pi,
         "lim": (-math.pi, math.pi),
@@ -464,10 +464,10 @@ default_axis_settings = {
     },
     'mll': {
         "field": "mll",
-        "bins": 300,
+        "bins": 50,
         "start": 0,
-        'stop': 1500,
-        "lim": (0, 500),
+        'stop': 300,
+        "lim": (0, 300),
         'label': "$m_{\ell\ell}$ [GeV]",
     },
 }

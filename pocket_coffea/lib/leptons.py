@@ -73,8 +73,14 @@ def get_dilepton(electrons, muons, transverse=False):
         fields["eta"] = ak.zeros_like(fields["pt"])
     dileptons = ak.zip(fields, with_name="PtEtaPhiMCandidate")
 
-    return dileptons
+    # add dilepton mass cut (addded in custom cut functions instead)
+    #mass_min = dileptons.mass > 20
+    #zmass_rej = ak.any( ( (dileptons.mass < 76 ) or (dileptons.mass > 106  )) , axis=1)  
+    #mass_pass = mass_min &  zmass_rej   
 
+    #dileptons = dileptons[mass_pass]
+    return dileptons
+    
 
 def get_diboson(dileptons, MET, transverse=False):
 
