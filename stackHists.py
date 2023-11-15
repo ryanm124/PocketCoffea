@@ -159,11 +159,11 @@ print(o['cutflow'])
 print("o['cutflow']['baseline']")
 print(o['cutflow']['baseline'])
 
-print("o['sumw']['baseline']")
-print(o['sumw']['baseline'])
+print("o['sumw2']['baseline']")
+print(o['sumw2']['baseline'])
 
-print("o['sumw']['baseline']['TTToSemiLeptonic__2018']")
-print(o['sumw']['baseline']['TTToSemiLeptonic__2018'])
+print("o['sumw2']['baseline']['TTToSemiLeptonic__2018']")
+print(o['sumw2']['baseline']['TTToSemiLeptonic__2018'])
 
 #print(self.output['cutflow'])
 #print(o['variables']['nMuonGood']['TTbbDiLeptonic'].keys())
@@ -187,7 +187,7 @@ with open('/afs/cern.ch/user/a/asparker/public/sept_ttH/PocketCoffea/AnalysisCon
 
 # Assuming your cutflow data is stored in the 'cutflow_data' dictionary
 cutflow_data = o['cutflow']['baseline']
-cutflow_uncerts = o['sumw']['baseline']
+cutflow_uncerts = o['sumw2']['baseline']
 
 
 # Define LaTeX table header
@@ -223,7 +223,7 @@ for group, processes in plotting_styles['plotting_style']['samples_groups'].item
     # Replace group names with the ones from the YAML labels_mc section
     group_label = plotting_styles['plotting_style']['labels_mc'].get(group, group)
     
-    group_uncert2 = math.sqrt(group_uncert * group_uncert)
+    group_uncert2 = math.sqrt(group_uncert) # * group_uncert)
 
     latex_table += f"{group_label} & {group_count} \pm {group_uncert2:.4g}  \\\\\n"
 
