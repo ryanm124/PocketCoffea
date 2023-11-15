@@ -64,6 +64,8 @@ if args.exclude_hist != None:
     variables = list(filter(lambda x : all([s not in x for s in args.exclude_hist]), variables))
 hist_objs = { v : accumulator['variables'][v] for v in variables }
 
+print(variables)
+
 plotter = PlotManager(
     variables=variables,
     hist_objs=hist_objs,
