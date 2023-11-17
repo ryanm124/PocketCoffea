@@ -284,6 +284,7 @@ def nBtagEq(events, params, year, processor_params, **kwargs):
             )
 
 def diLeptonFlavor(events, params, year, **kwargs):
+
     if params["flavor"]=="ee":
         return ((events.nLeptonGood==2) & (events.nElectronGood==2))
     elif params["flavor"]=="emu":
@@ -292,6 +293,8 @@ def diLeptonFlavor(events, params, year, **kwargs):
         return ((events.nLeptonGood==2) & (events.nMuonGood==2))
     else:
         raise Exception(f"flavor {params['flavor']} does not exist")
+
+
 
 def nElectron(events, params, year, **kwargs):
     '''Mask for min N electrons with minpt.'''
