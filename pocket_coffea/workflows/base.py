@@ -72,6 +72,7 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
         # Accumulators for the output
         self.output_format = {
             "sum_genweights": {},
+            "sum_genweights_ttB": {},
             "sumw": {
                 cat: {} for cat in self._categories
             },
@@ -253,6 +254,7 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
                 isMC=self._isMC,
             )
             self._preselection_masks.add(cut.id, mask)
+            
         # Now that the preselection mask is complete we can apply it to events
         self.events = self.events[
             self._preselection_masks.all(*self._preselection_masks.names)
@@ -705,7 +707,9 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
         if self._isMC:
             # This is computed before any preselection
             self.output['sum_genweights'][self._dataset] = ak.sum(self.events.genWeight)
-
+            genTtbarId = self.events.genTtbarId%100
+            self.output['sum_genweights_ttB'][self._dataset] = ak.sum(self.events.genWeight[genTtbarId>50])
+        
         self.weights_config = self.weights_config_allsamples[self._sample]
         ########################
         # Then the first skimming happens.
@@ -738,7 +742,7 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
         self.define_histograms_extra()
         self.define_column_accumulators()
         self.define_column_accumulators_extra()
-
+        
         for variation in self.get_shape_variations():
             # Apply preselections
             self.apply_object_preselection(variation)
@@ -755,7 +759,7 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
             # If not events remains after the preselection we skip the chunk
             if not self.has_events:
                 continue
-
+            
             ##########################
             # After the preselection cuts has been applied more processing is performend
             ##########################

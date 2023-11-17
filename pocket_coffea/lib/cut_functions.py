@@ -177,6 +177,29 @@ def get_nObj_less(N, coll="JetGood", name=None):
     return Cut(name=name, params={"N": N, "coll": coll}, function=less_nObj)
 
 
+def jetFlavourMask(events,params,**kwargs):
+    numJets = ak.sum((abs(events.GenJetGood.hadronFlavour == 5) & ~(events.GenJetGood.isFromTop)),axis=1)
+    numFatJets = ak.sum((abs(events.GenFatJetGood.hadronFlavour == 5) & ~(events.GenFatJetGood.isFromTop)),axis=1)
+    numTotalJets = numJets+numFatJets
+    numTotalJets = numTotalJets==1
+    maskB = numTotalJets & (ak.any((abs(events.GenJetGood.hadronFlavour == 5) & ~(events.GenJetGood.isFromTop)) & (events.GenJetGood.numBQuarksMatched==1),axis=1) | ak.any((abs(events.GenFatJetGood.hadronFlavour == 5) & ~(events.GenFatJetGood.isFromTop)) & (events.GenFatJetGood.numBQuarksMatched==1),axis=1) )
+    
+    numJets = ak.sum((abs(events.GenJetGood.hadronFlavour == 5) & ~(events.GenJetGood.isFromTop)),axis=1)
+    numFatJets = ak.sum((abs(events.GenFatJetGood.hadronFlavour == 5) & ~(events.GenFatJetGood.isFromTop)),axis=1)
+    numTotalJets = numJets+numFatJets
+    numTotalJets = numTotalJets==1
+    mask2B = numTotalJets & (ak.any((abs(events.GenJetGood.hadronFlavour == 5) & ~(events.GenJetGood.isFromTop)) & (events.GenJetGood.numBQuarksMatched>1),axis=1) | ak.any((abs(events.GenFatJetGood.hadronFlavour == 5) & ~(events.GenFatJetGood.isFromTop)) & (events.GenFatJetGood.numBQuarksMatched>1),axis=1) )
+    
+    numJets = ak.sum((abs(events.GenJetGood.hadronFlavour == 5) & ~(events.GenJetGood.isFromTop)),axis=1)
+    numFatJets = ak.sum((abs(events.GenFatJetGood.hadronFlavour == 5) & ~(events.GenFatJetGood.isFromTop)),axis=1)
+    numTotalJets = numJets+numFatJets
+    maskBBBar = numTotalJets>1
+    mask = maskB | mask2B | maskBBBar
+    if params["flavour"] == "B":
+        return mask 
+    else:
+        return ~mask
+
 ##########################################
 # Min b-tagged jets with custom collection
 
@@ -260,6 +283,17 @@ def nBtagEq(events, params, year, processor_params, **kwargs):
                 == params["N"]
             )
 
+def diLeptonFlavor(events, params, year, **kwargs):
+    nelectrons = ak.num(events.ElectronGood[~ak.is_none(events.ElectronGood, axis=1)])
+    nmuons = ak.num(events.MuonGood[~ak.is_none(events.MuonGood, axis=1)])
+    leptonMask = nelectrons
+    if params["flavor"]=="ee":
+        leptonMask = ((nelectrons+nmuons)==2) & (nelectrons == 2)
+    if params["flavor"]=="emu":
+        leptonMask = ((nelectrons+nmuons)==2) & (nmuons == 1) & (nelectrons == 1)
+    if params["flavor"]=="mumu":
+        leptonMask = ((nelectrons+nmuons)==2) & (nmuons == 2)
+    return leptonMask
 
 def nElectron(events, params, year, **kwargs):
     '''Mask for min N electrons with minpt.'''
@@ -292,6 +326,12 @@ def get_nBtagMin(N, minpt=0, coll="BJetGood", name=None):
         name=name, params={"N": N, "coll": coll, "minpt": minpt}, function=nBtagMin
     )
 
+def get_diLeptonFlavor(flavor, name=None):
+    if name == None:
+        name = f"dilepton{flavor}"
+    return Cut(
+        name=name, params={"flavor": flavor}, function=diLeptonFlavor
+    )
 
 def get_nBtagEq(N, minpt=0, coll="BJetGood", name=None):
     if name == None:
