@@ -159,11 +159,11 @@ print(o['cutflow'])
 print("o['cutflow']['baseline']")
 print(o['cutflow']['baseline'])
 
-print("o['sumw2']['baseline']")
-print(o['sumw2']['baseline'])
+print("o['sumw']['baseline']")
+print(o['sumw']['baseline'])
 
-print("o['sumw2']['baseline']['TTToSemiLeptonic__2018']")
-print(o['sumw2']['baseline']['TTToSemiLeptonic__2018'])
+print("o['sumw']['baseline']['TTToSemiLeptonic__2018']")
+print(o['sumw']['baseline']['TTToSemiLeptonic__2018'])
 
 #print(self.output['cutflow'])
 #print(o['variables']['nMuonGood']['TTbbDiLeptonic'].keys())
@@ -177,8 +177,100 @@ print(o['sumw2']['baseline']['TTToSemiLeptonic__2018'])
 #    plt.clf()
 
 
+vars = {}
+for i, var_name in enumerate(o['variables'].keys()):
+    # Replace 'ttHTobb_2018' with the desired category                                                                          
+    hists = {}
+    vars[var_name] = hists
+    meras = 0
+    eeras = 0
+    for sam_name in o['columns'].keys():
+        sam_namey = sam_name + '__2018'
+        if 'ttHToNonbb' in sam_name: sam_namey ='ttHToNonbb_Powheg_2018'
+        if 'DYJetsToLL_M-50' in sam_name: sam_namey ='DYJetsToLL_M-50_v7__2018'
+        if 'ZJetsToQQ' in sam_name: sam_namey = sam_name + '_v7__2018'
+        if 'ST' in sam_name: sam_namey = sam_name + '_v7__2018'
+        if 'QCD' in sam_name: sam_namey = sam_name + '_v7__2018'
+        if 'WJets' in sam_name: sam_namey = sam_name + '_v7__2018' 
+        if 'WJetsToLNu' in sam_name: sam_namey = sam_name + '__2018'
+        if 'TTWJets' in sam_name: sam_namey = sam_name + '__2018'
+        if 'TTGJets' in sam_name: sam_namey = sam_name + '__2018'
+        if 'THW' in sam_name: sam_namey = sam_name + '__2018'
+        if 'WW' in sam_name: sam_namey = sam_name + '__2018'
+        if 'WZ' in sam_name: sam_namey = sam_name + '__2018'
+        if 'ZZ' in sam_name: sam_namey = sam_name + '__2018'
+        if 'ttHTobb' in sam_name: sam_namey = sam_name + '_2018'
+
+        print(sam_name)
+        print(var_name)
+        if 'SingleMuon' in sam_name: 
+            if meras == 0:
+                sam_namey = sam_name + '_2018_EraA'
+            if meras == 1:
+                sam_namey = sam_name + '_2018_EraB'
+            if meras == 2:
+                sam_namey = sam_name + '_2018_EraC'
+            if meras == 3:
+                sam_namey = sam_name + '_2018_EraD'
+
+            meras+=1
+        if 'EGamma' in sam_name:
+            if eeras == 0:
+                sam_namey = sam_name + '_2018_EraA'
+            if eeras == 1:
+                sam_namey = sam_name + '_2018_EraB'
+            if eeras == 2:
+                sam_namey = sam_name + '_2018_EraC'
+            if eeras == 3:
+                sam_namey = sam_name + '_2018_EraD'
+
+            eeras+=1
+
+        varHist = o['variables'][var_name][sam_name][sam_namey ]
+    
+        # baseline is the last index in cat, so this is the 1b category                                                                        
+        h = varHist.stack("cat").project(varHist.axes[-1].name)[0]
+        hists[sam_name]=h
+
+    h2 = hists['TTToSemiLeptonic'] + hists['TTToSemiLeptonic']
+
+    #plt.legend()
+    #plt.title(var_name)
+    #plt.savefig(f"hists/plot_{var_name}.png")
+    #plt.show()
+    #plt.clf()
+
+'''
+for i, var_name in enumerate(o['variables'].keys()):
+    # Replace 'ttHTobb_2018' with the desired category
+    varHist = None
+    for sam_name in o['columns'].keys():
+        varHist = o['variables'][var_name][sam_name][sam_name+'_2018']
+        h = varHist.stack("cat").project(varHist.axes[-1].name)[0].plot(stack=True,density=False,histtype="fill")
+       
+    plt.legend()
+    plt.title(var_name)
+    plt.savefig(f"hists/plot_{var_name}.png")
+    plt.show()
+    plt.clf()
 
 
+for i, var_name in enumerate(o['variables'].keys()):
+    # Replace 'ttHTobb_2018' with the desired category
+    varHist = o['variables'][var_name]['ttHTobb']['ttHTobb_2018']['baseline']
+    print(varHist)
+    print("varHist")
+    print(varHist.axes[-1].name)
+    print("varHist.axes[-1].name")    
+    # Project onto the last axis (assuming it's the category axis) and plot
+    h = varHist.project(varHist.axes[-1].name)[:-1].plot(density=False, histtype="fill")
+    
+    plt.legend()
+    plt.title(var_name)
+    plt.savefig(f"hists/ttHTobb_plot_{i}.png")
+    plt.show()
+    plt.clf()
+'''
 import yaml
 
 # Load the data from the YAML file
@@ -187,7 +279,7 @@ with open('/afs/cern.ch/user/a/asparker/public/sept_ttH/PocketCoffea/AnalysisCon
 
 # Assuming your cutflow data is stored in the 'cutflow_data' dictionary
 cutflow_data = o['cutflow']['baseline']
-cutflow_uncerts = o['sumw2']['baseline']
+cutflow_uncerts = o['sumw']['baseline']
 
 
 # Define LaTeX table header
