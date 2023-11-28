@@ -833,10 +833,10 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
         To add additional customatizaion redefine the `postprocessing` function,
         but remember to include a super().postprocess() call.
         '''
-        self._isMC = self.events.metadata["isMC"] == "True"# needed to redefine this here
-        if self._isMC:
-            if not self.workflow_options.get("donotscale_sumgenweights", False):
-                self.rescale_sumgenweights(accumulator["sum_genweights"], accumulator)
+        #self._isMC = self.events.metadata["isMC"] == "True"# needed to redefine this here
+        #if self._isMC:
+        if not self.workflow_options.get("donotscale_sumgenweights", False):
+            self.rescale_sumgenweights(accumulator["sum_genweights"], accumulator)
 
         # Saving dataset metadata directly in the output file reading from the config
         dmeta = accumulator["datasets_metadata"] = {
