@@ -467,6 +467,8 @@ class Shape:
     def get_datamc_ratio(self, cat):
         '''Computes the data/MC ratio and the corresponding uncertainty.'''
         stacks = self._get_stacks(cat)
+        for h in stacks["data"]:
+            print(h.name, h.values())
         num = stacks["data_sum"].values()
 
         den = stacks["mc_nominal_sum"].values()
@@ -474,12 +476,17 @@ class Shape:
         if np.any(den <0 ):
             print(f"WARNING: negative bins in MC of shape {self.name}. BE CAREFUL! Putting negative bins to 0 for plotting..")
         den[den < 0] = 0
-            
+
+        print("data sum",num)
+        print("mc sum",den)
         ratio = num / den
         # TO DO: Implement Poisson interval valid also for num~0
         # np.sqrt(num) is just an approximation of the uncertainty valid at large num
         ratio_unc = np.sqrt(num) / den
-        ratio_unc[np.isnan(ratio_unc)] = np.inf
+        ratio_unc[np.isnan(ratio_unc)] = 0.0
+        ratio[np.isnan(ratio)] = 0.0
+        ratio_unc[np.isinf(ratio_unc)] = 0.0
+        ratio[np.isinf(ratio)] = 0.0
 
         return ratio, ratio_unc
 
@@ -627,6 +634,8 @@ class Shape:
         else:
             if not hasattr(self, "rax"):
                 self.define_figure(ratio=True)
+        print("ratio:",ratio)
+        print("ratio_unc",ratio_unc)
         self.rax.errorbar(
             self.style.opts_axes["xcenters"], ratio, yerr=ratio_unc, **self.style.opts_data
         )
@@ -652,6 +661,9 @@ class Shape:
             ax = self.rax
             up = self.syst_manager.total(cat).ratio_up
             down = self.syst_manager.total(cat).ratio_down
+            #for var_up in self.syst_manager.variations_up:
+                #print(var_up,"err2_up",self.syst_manager.get_syst(var_up[:-2],cat).err2_up)
+                #print(var_up[:-2]+"Down","err2_down",self.syst_manager.get_syst(var_up[:-2],cat).err2_down)
         else:
             ax = self.ax
             up = self.syst_manager.total(cat).up
@@ -875,6 +887,8 @@ class SystUnc:
                 assert all(
                     np.equal(self.style.opts_axes["xcenters"], syst.style.opts_axes["xcenters"])
                 ), "Attempting to sum systematic uncertainties with different bin centers."
+            #print("from_syst err2up",syst.name,syst.err2_up)
+            #print("from_syst err2down",syst.name,syst.err2_down)
             self.err2_up += syst.err2_up
             self.err2_down += syst.err2_down
 
@@ -883,10 +897,13 @@ class SystUnc:
         a Shape object. The corresponding up/down squared uncertainties are stored and take
         into account the possibility for the uncertainty to be one-sided.'''
         # Loop over all the MC samples and sum the systematic uncertainty in quadrature
+        counter = 0
         for h in stacks["mc"]:
             # Nominal variation for a single MC sample
             h_nom = h[{'variation': 'nominal'}]
             nom = h_nom.values()
+            print("h_nom",h_nom.name, nom[3])
+            counter+= nom[3]
             # Sum in quadrature of mcstat
             if self.is_mcstat:
                 mcstat_err2 = h_nom.variances()
@@ -899,6 +916,9 @@ class SystUnc:
             # Compute the uncertainties corresponding to the up/down variations
             err_up = var_up - nom
             err_down = var_down - nom
+            
+            #print("variation name:",f'{self.name}Up',var_up)
+            #print("variation name:",f'{self.name}Down',var_down)
             # Compute the flags to check which of the two variations (up and down) are pushing the nominal value up and down
             up_is_up = err_up > 0
             down_is_down = err_down < 0
@@ -918,7 +938,8 @@ class SystUnc:
             # Sum in quadrature of the systematic uncertainty corresponding to a MC sample
             self.err2_up += err2_up_combined
             self.err2_down += err2_down_combined
-
+        print("total",counter)
+            
     def plot(self, ax=None):
         '''Plots the nominal, up and down systematic variations on the same plot.'''
         plt.style.use([hep.style.ROOT, {'font.size': self.style.fontsize}])
