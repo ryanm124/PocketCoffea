@@ -328,7 +328,7 @@ class HistManager:
         Custom_fields is a dict of additional array. The expected lenght of the first dimension is the number of
         events. The categories mask will be applied.
         '''
-
+        
         # Preloading weights
         if self.isMC:
             weights = {}
@@ -336,6 +336,7 @@ class HistManager:
                 weights[category] = self.__prefetch_weights(
                     weights_manager, category, shape_variation
                 )
+            
         # Cleaning the weights cache decorator between calls.
         weights_cache.cache_.clear()
 
@@ -428,6 +429,7 @@ class HistManager:
             for category, cat_mask in categories.get_masks():
                 # loop directly on subsamples
                 for subsample, subs_mask in subsamples.get_masks():
+                    #print("hist",name,subsample,category)
                     # logging.info(f"\t\tcategory {category}, subsample {subsample}")
                     mask = cat_mask & subs_mask
                     # Skip empty categories and subsamples

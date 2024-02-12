@@ -122,7 +122,7 @@ class ColumnsManager:
                     self.output[category][f"weight_{variation}"] = column_accumulator(
                     ak.to_numpy(weights_manager.get_weight(category)[mask], allow_missing=False))
                     
-                
+            #print(dataset,category)
             for outarray in outarrays:
                 # Check if the cut is multidimensional
                 # if so we need to check the collection
