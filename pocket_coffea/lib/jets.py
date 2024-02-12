@@ -248,6 +248,7 @@ def jet_selection(events, jet_type, params, leptons_collection=""):
 def btagging(Jet, btag):
     return Jet[Jet[btag["btagging_algorithm"]] > btag["btagging_WP"]]
 
+
 def bbtagging(Jet, btag, WP, isOld):
     #if self.params.btagging.working_point[self._year] in Jet : # to prevent breaks when bbtagging algorithm branch isn't written, this happens when nFatJet=0 for event  
     if(WP=="L"):
@@ -312,3 +313,36 @@ def bbtagging(Jet, btag, WP, isOld):
         #    print(Jet)
         #    print(btag["bbtagging_algorithm"])
         #    return Jet
+
+
+def CvsLsorted(jets, ctag):
+    return jets[ak.argsort(jets[ctag["tagger"]], axis=1, ascending=False)]
+
+
+def get_dijet(jets):
+    
+    fields = {
+        "pt": 0.,
+        "eta": 0.,
+        "phi": 0.,
+        "mass": 0.,
+    }
+
+    jets = ak.pad_none(jets, 2)
+    njet = ak.num(jets[~ak.is_none(jets, axis=1)])
+    
+    dijet = jets[:, 0] + jets[:, 1]
+
+    for var in fields.keys():
+        fields[var] = ak.where(
+            (njet >= 2),
+            getattr(dijet, var),
+            fields[var]
+        )
+
+    fields["deltaR"] = ak.where( (njet >= 2), jets[:,0].delta_r(jets[:,1]), -1)
+
+    dijet = ak.zip(fields, with_name="PtEtaPhiMCandidate")
+
+    return dijet
+
