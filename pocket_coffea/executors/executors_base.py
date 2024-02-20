@@ -21,10 +21,11 @@ class ExecutorFactoryABC(ABC):
         if self.run_options.get('voms-proxy', None) is not None:
              self.x509_path = self.run_options['voms-proxy']
         else:
-             _x509_localpath = get_proxy_path()
-             # Copy the proxy to the home from the /tmp to be used by workers
-             self.x509_path = os.environ['HOME'] + f'/{_x509_localpath.split("/")[-1]}'
-             os.system(f'cp {_x509_localpath} {self.x509_path}')
+             print("setup_proxyfile")
+             #_x509_localpath = get_proxy_path()
+             ## Copy the proxy to the home from the /tmp to be used by workers
+             #self.x509_path = os.environ['HOME'] + f'/{_x509_localpath.split("/")[-1]}'
+             #os.system(f'cp {_x509_localpath} {self.x509_path}')
              
     def set_env(self):
         # define some environmental variable
@@ -32,7 +33,7 @@ class ExecutorFactoryABC(ABC):
         vars= {
             "XRD_RUNFORKHANDLER": "1",
             "MALLOC_TRIM_THRESHOLD_" : "0",
-            "X509_USER_PROXY": self.x509_path
+            #"X509_USER_PROXY": self.x509_path
         }
         for k,v in vars.items():
             os.environ[k] = v
