@@ -5,6 +5,26 @@
  / ____/ /_/ / /__/ ,< /  __/ /_/ /___/ /_/ / __/ __/  __/ /_/ / 
 /_/    \____/\___/_/|_|\___/\__/\____/\____/_/ /_/  \___/\__,_/  
 ```
+
+
+```
+git clone -b casa https://github.com/ryanm124/PocketCoffea.git
+cd PocketCoffea/
+
+python -m venv --system-site-packages myenv
+
+source myenv/bin/activate
+
+pip install -e .[dev]
+
+git clone -b casa https://github.com/ryanm124/AnalysisConfigs.git
+
+cd AnalysisConfigs/configs/ttHbb/
+
+runner.py --cfg newconfig5.py -o out_debug_Feb20 --test
+```
+
+
 <!--[![Actions Status][actions-badge]][actions-link] -->
 [![Documentation Status][rtd-badge]][rtd-link]
 [![PyPI version][pypi-version]][pypi-link]
