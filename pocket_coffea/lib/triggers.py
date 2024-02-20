@@ -55,8 +55,9 @@ def get_trigger_mask(events, trigger_dict, year, isMC, primaryDatasets=None, inv
             )
             trigger_mask = trigger_mask | (events.HLT[trigger] & flag)
         else:
-            if trigger in events.HLT.fields:
-                trigger_mask = trigger_mask | events.HLT[trigger.lstrip("HLT_")]
+            trigger_mask = trigger_mask | events.HLT[trigger.lstrip("HLT_")]
+            #if trigger in events.HLT.fields:
+            #    trigger_mask = trigger_mask | events.HLT[trigger.lstrip("HLT_")]
 
     if invert:
         trigger_mask = ~trigger_mask

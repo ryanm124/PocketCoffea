@@ -138,7 +138,7 @@ class Sample:
             self.fileslist_concrete += files_rucio
 
     # Function to build the sample dictionary
-    def get_sample_dict(self, redirector=True, prefix="root://xrootd-cms.infn.it//"):
+    def get_sample_dict(self, redirector=True, prefix="root://xcache/"):
         if redirector:
             out = {
                 self.name: {
