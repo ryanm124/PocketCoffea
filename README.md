@@ -5,6 +5,37 @@
  / ____/ /_/ / /__/ ,< /  __/ /_/ /___/ /_/ / __/ __/  __/ /_/ / 
 /_/    \____/\___/_/|_|\___/\__/\____/\____/_/ /_/  \___/\__,_/  
 ```
+
+
+
+```
+apptainer shell  -B /afs -B /cvmfs/cms.cern.ch -B /tmp  -B /eos/cms/     -B /etc/sysconfig/ngbauth-submit      -B ${XDG_RUNTIME_DIR}  --env KRB5CCNAME=${XDG_RUNTIME_DIR}/krb5cc   /cvmfs/unpacked.cern.ch/gitlab-registry.cern.ch/cms-analysis/general/pocketcoffea:lxplus-cc7-stable
+
+git clone git@github.com:PocketCoffea/PocketCoffea.git
+
+cd PocketCoffea
+ git remote add ours git@github.com:ryanm124/PocketCoffea.git
+
+Git fetch ours
+
+git checkout ours/run
+
+python -m venv --system-site-packages myenv
+
+source myenv/bin/activate
+
+pip install -e .[dev]
+
+git clone -b merge git@github.com:ryanm124/AnalysisConfigs.git
+
+cd AnalysisConfigs/configs/ttHbb/
+
+build_datasets.py --cfg datasets/MC_all.json -bs T2_FNAL -o
+
+./runsamples_2018.sh # this runs the MC, still need to do data and any datasets that failed from initial list
+
+```
+
 <!--[![Actions Status][actions-badge]][actions-link] -->
 [![Documentation Status][rtd-badge]][rtd-link]
 [![PyPI version][pypi-version]][pypi-link]
