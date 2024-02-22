@@ -30,9 +30,30 @@ git clone -b merge git@github.com:ryanm124/AnalysisConfigs.git
 
 cd AnalysisConfigs/configs/ttHbb/
 
-build_datasets.py --cfg datasets/MC_all.json -bs T2_FNAL -o
+build_datasets.py --cfg datasets/MC_all.json -bs  T1_US_FNAL_Disk  -o 
+build_datasets.py --cfg datasets/datasets_EGamma_definitions.json -bs  T1_US_FNAL_Disk  -o 
+build_datasets.py --cfg datasets/datasets_SingleMuon_definitions.json -bs  T1_US_FNAL_Disk  -o
 
-./runsamples_2018.sh # this runs the MC, still need to do data and any datasets that failed from initial list
+
+# This hangs after first job so we need a seperate tmux window for each runner.py call
+# ./runsamples_2018.sh # this runs the MC, still need to do data and any datasets that failed from initial list
+
+# Instead use tmux to run
+
+systemctl --user enable --now tmux.service
+tmux new -s mysession
+
+Inside tmux:
+
+runner.py --cfg config_all.py -y 2018 -sa most -o production_Feb22 --full
+
+Inside a different tmux session:
+
+runner.py --cfg config_all2.py -y 2018 -sa most2 -o production_Feb22 --full
+
+# to attach to your session
+
+tmux a -t mysession
 
 ```
 
