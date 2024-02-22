@@ -569,11 +569,9 @@ class Shape:
                 print(f"WARNING: negative bins in MC of shape {self.name}. BE CAREFUL! Putting negative bins to 0 for plotting..")
         den[den < 0] = 0
 
-<<<<<<< HEAD
+
         #print("data sum",num)
         #print("mc sum",den)
-=======
->>>>>>> origin/main
         ratio = num / den
         # TO DO: Implement Poisson interval valid also for num~0
         # np.sqrt(num) is just an approximation of the uncertainty valid at large num
@@ -742,16 +740,12 @@ class Shape:
         else:
             if not hasattr(self, "rax"):
                 self.define_figure(ratio=True)
-<<<<<<< HEAD
-        #print("ratio:",ratio)
-        #print("ratio_unc",ratio_unc)
-=======
 
         # Removing nans and inf
         np.nan_to_num(ratio, copy=False)
         np.nan_to_num(ratio_unc, copy=False)
 
->>>>>>> origin/main
+
         self.rax.errorbar(
             self.style.opts_axes["xcenters"], ratio, yerr=ratio_unc, **self.style.opts_data
         )
@@ -863,16 +857,11 @@ class Shape:
                 if self.log:
                     filepath = os.path.join(plot_dir, f"log_{self.name}_{cat}.pdf")
                 else:
-<<<<<<< HEAD
-                    filepath = os.path.join(plot_dir, f"{self.name}_{cat}.pdf")
-                #print("Saving", filepath)
-                plt.savefig(filepath, dpi=150, format="pdf")
-=======
                     filepath = os.path.join(plot_dir, f"{self.name}_{cat}.png")
                 if self.verbose>0:
                     print("Saving", filepath)
                 plt.savefig(filepath, dpi=150, format="png")
->>>>>>> origin/main
+
             else:
                 plt.show(self.fig)
             plt.close(self.fig)
