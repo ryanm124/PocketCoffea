@@ -34,11 +34,33 @@ def load_config(cfg, outputdir):
     return config
 
 
+def get_year_from_args():
+    parser = argparse.ArgumentParser(description='Run analysis on NanoAOD files using PocketCoffea processors')
+    # Inputs                                                                                                  
+    parser.add_argument("-c","--cfg", default=os.getcwd() + "/config/test.py", required=True, type=str,
+                        help='Config file with parameters specific to the current run')
+    parser.add_argument("-ro", "--custom-run-options", type=str, default=None, help="User provided run options .yaml file")
+    parser.add_argument("-o", "--outputdir", required=True, type=str, help="Output folder")
+    parser.add_argument("-y", "--year", required=True, type=str, help="year")
+    parser.add_argument("-sa", "--sample", required=True, type=str, help="sample name")
+    parser.add_argument("-t", "--test", action="store_true", help="Run with limit 1 interactively")
+    parser.add_argument("-lf","--limit-files", type=int, help="Limit number of files")
+    parser.add_argument("-lc","--limit-chunks", type=int, help="Limit number of chunks", default=None)
+    parser.add_argument("-e","--executor", type=str,
+                        help="Overwrite executor from config (to be used only with the --test options)" )
+    parser.add_argument("-s","--scaleout", type=int, help="Overwrite scalout config" )
+    parser.add_argument("-ll","--loglevel", type=str, help="Logging level", default="INFO" )
+    parser.add_argument("-f","--full", action="store_true", help="Process all datasets at the same time", default=False )
+    args = parser.parse_args()
+    return [args.year,args.sample ]
+
 @click.command()
 @click.option('--cfg', required=True, type=str,
               help='Config file with parameters specific to the current run')
 @click.option("-ro", "--custom-run-options", type=str, default=None, help="User provided run options .yaml file")
 @click.option("-o", "--outputdir", required=True, type=str, help="Output folder")
+@click.option("-y", "--year", required=True, type=str, help="year")
+@click.option("-sa", "--sample", required=True, type=str, help="sample name")
 @click.option("-t", "--test", is_flag=True, help="Run with limit 1 interactively")
 @click.option("-lf","--limit-files", type=int, help="Limit number of files")
 @click.option("-lc","--limit-chunks", type=int, help="Limit number of chunks", default=None)
@@ -57,9 +79,9 @@ def run(cfg,  custom_run_options, outputdir, test, limit_files,
     # Setting up the output dir
     os.makedirs(outputdir, exist_ok=True)
     outfile = os.path.join(
-        outputdir, "output_{}.coffea"
+        outputdir,  "output_"+cfg[:-3] +"_" + sample +"_" + year + ".coffea"
     )
-    logfile = os.path.join(outputdir, "logfile.log")
+    logfile = os.path.join(outputdir, "logfile" +cfg[:-3] +"_" + sample +"_" + year +  ".log")
     # Prepare logging
     if (not setup_logging(console_log_output="stdout", console_log_level=loglevel, console_log_color=True,
                         logfile_file=logfile, logfile_log_level="info", logfile_log_color=False,
