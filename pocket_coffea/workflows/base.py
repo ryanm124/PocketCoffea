@@ -72,6 +72,7 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
         # Accumulators for the output
         self.output_format = {
             "sum_genweights": {},
+            "sum_signOf_genweights": {},
             "sum_genweights_ttB": {},
 
             "sumw": {
@@ -735,7 +736,7 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
         if self._isMC:
             # This is computed before any preselection
             self.output['sum_genweights'][self._dataset] = ak.sum(self.events.genWeight)
-
+            self.output['sum_signOf_genweights'][self._dataset] = ak.sum(np.sign(self.events.genWeight))
             genTtbarId = self.events.genTtbarId%100
             self.output['sum_genweights_ttB'][self._dataset] = ak.sum(self.events.genWeight[genTtbarId>50])
         
