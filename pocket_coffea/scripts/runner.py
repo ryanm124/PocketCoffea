@@ -73,7 +73,7 @@ def get_year_from_args():
 @click.option("--executor-custom-setup", type=str, help="Python module to be loaded as custom executor setup")
 def run(cfg,  custom_run_options, outputdir, test, limit_files,
            limit_chunks, executor, scaleout, chunksize,
-           queue, loglevel, full, executor_custom_setup):
+           queue, loglevel, full, executor_custom_setup, year, sample):
     '''Run an analysis on NanoAOD files using PocketCoffea processors'''
 
     # Setting up the output dir
@@ -162,8 +162,8 @@ def run(cfg,  custom_run_options, outputdir, test, limit_files,
     # if site is known we can load the corresponding module
     elif site == "lxplus":
         from pocket_coffea.executors import executors_lxplus as executors_lib
-    elif site == "T3_CH_PSI":
-        from pocket_coffea.executors import executors_T3_CH_PSI as executors_lib
+    elif site == "T3_PSI_CH":
+        from pocket_coffea.executors import executors_T3_PSI_CH as executors_lib
     elif site == "purdue":
         from pocket_coffea.executors import executors_purdue as executors_lib
     elif site == "casa":
