@@ -8,7 +8,7 @@ from collections import defaultdict
 class ColOut:
     collection: str  # Collection
     columns: List[str]  # list of columns to export
-    flatten: bool = True  # Flatten by defaul
+    flatten: bool = False  # Flatten by defaul
     store_size: bool = True
     fill_none: bool = True
     fill_value: float = -999.0  # by default the None elements are filled
@@ -186,7 +186,7 @@ class ColumnsManager:
                     )
         return self.output
 
-    def fill_ak_arrays(self, events, cuts_masks, subsample_mask=None, weights_manager=None, dataset=None):
+    def fill_ak_arrays(self, events, cuts_masks, subsample_mask=None, weights_manager=None, dataset=None, shape_variation="nominal"):
         self.output = {}
         for category, outarrays in self.cfg.items():
             if len(outarrays)==0:
@@ -200,8 +200,15 @@ class ColumnsManager:
             # Getting the weights
             # Only for nominal variation for the moment
             if weights_manager:
-                out_by_cat["weight"] = weights_manager.get_weight(category)[mask]
-            
+                if shape_variation=="nominal":
+                    for variation in self.available_weights_variations_bycat[category]:
+                        if variation == "nominal":
+                            out_by_cat[f"weight_{variation}"] = weights_manager.get_weight(category)[mask]
+                        else:
+                            out_by_cat[f"weight_{variation}"] = weights_manager.get_weight(category, modifier=variation)[mask]
+                else:
+                    out_by_cat[f"weight_{variation}"] = weights_manager.get_weight(category)[mask]
+                
 
             for outarray in outarrays:
                 # Check if the cut is multidimensional
@@ -216,7 +223,10 @@ class ColumnsManager:
                             while exporting collection {outarray.collection}! Please check your categorization"
                         )
                 # Applying mask after getting the collection
-                data = events[outarray.collection][mask]
+                if(outarray.collection=="events"):
+                    data = events[mask]
+                else:
+                    data = events[outarray.collection][mask]
 
                 # Filtering the position in the collection if needed
                 if outarray.pos_start and outarray.pos_end:
@@ -250,10 +260,11 @@ class ColumnsManager:
                             )
                         else:
                             out = data[col]
-
+                    #print(f"{outarray.collection}_{col}")
                     out_by_cat[f"{outarray.collection}_{col}"] = out
-
+                    
             #zipping all the arrays by cat
+            #print(out_by_cat)
             self.output[category] = ak.zip(out_by_cat, depth_limit=1)
         #return full output with all categories
         return self.output

@@ -500,10 +500,13 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
                                                self._categories,
                                                subsample_mask=self._subsamples[self._sample].get_mask(subs),
                                                weights_manager=self.weights_manager,
-                                               dataset=self._dataset
+                                               dataset=self._dataset,
+                                               shape_variation=variation
                                                )
                     fname = (self.events.behavior["__events_factory__"]._partition_key.replace( "/", "_" )
-                        + ".parquet")
+                        + f"_{variation}.parquet")
+                    fname = fname.replace("%","#")
+                    
                     for category, akarr in out_arrays.items():
                         # building the file name
                         subdirs = [self._dataset, sub, category]
@@ -533,11 +536,13 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
                                                self._categories,
                                                subsample_mask=None,
                                                weights_manager=self.weights_manager,
-                                               dataset=self._dataset
+                                               dataset=self._dataset,
+                                               shape_variation=variation
                                                )
                 # building the file name
                 fname = (self.events.behavior["__events_factory__"]._partition_key.replace( "/", "_" )
-                         + ".parquet")
+                         + f"_{variation}.parquet")
+                fname = fname.replace("%","#")
                 for category, akarr in out_arrays.items():
                     subdirs = [self._dataset, category]
                     dump_ak_array(akarr, fname, self.workflow_options["dump_columns_as_arrays_per_chunk"]+"/", subdirs)
