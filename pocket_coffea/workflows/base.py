@@ -504,12 +504,13 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
                                                shape_variation=variation
                                                )
                     fname = (self.events.behavior["__events_factory__"]._partition_key.replace( "/", "_" )
-                        + f"_{variation}.parquet")
+                        + ".parquet")
                     fname = fname.replace("%","#")
                     
                     for category, akarr in out_arrays.items():
                         # building the file name
-                        subdirs = [self._dataset, sub, category]
+                        subdirs = [self._dataset, sub, category,variation]
+                        #akarr = ak.zip({"columns": akarr, "sum_genweights": self.output['sum_genweights'][self._dataset]},depth_limit=1)
                         dump_ak_array(akarray, fname, self.workflow_options["dump_columns_as_arrays_per_chunk"]+"/", subdirs)
 
 
@@ -541,10 +542,11 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
                                                )
                 # building the file name
                 fname = (self.events.behavior["__events_factory__"]._partition_key.replace( "/", "_" )
-                         + f"_{variation}.parquet")
+                         + ".parquet")
                 fname = fname.replace("%","#")
                 for category, akarr in out_arrays.items():
-                    subdirs = [self._dataset, category]
+                    subdirs = [self._dataset, category, variation]
+                    #akarr = ak.zip({"columns": akarr, "sum_genweights": self.output['sum_genweights'][self._dataset]},depth_limit=1)
                     dump_ak_array(akarr, fname, self.workflow_options["dump_columns_as_arrays_per_chunk"]+"/", subdirs)
             else:
                 self.output["columns"][f"{self._sample}__{variation}"] = { self._dataset: self.column_managers[
