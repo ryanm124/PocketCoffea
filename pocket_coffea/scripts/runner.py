@@ -43,6 +43,7 @@ def get_year_from_args():
     parser.add_argument("-o", "--outputdir", required=True, type=str, help="Output folder")
     parser.add_argument("-y", "--year", required=True, type=str, help="year")
     parser.add_argument("-sa", "--sample", required=True, type=str, help="sample name")
+    parser.add_argument("-li", "--llist", required=True, type=str, help="list of sample names to process")
     parser.add_argument("-t", "--test", action="store_true", help="Run with limit 1 interactively")
     parser.add_argument("-lf","--limit-files", type=int, help="Limit number of files")
     parser.add_argument("-lc","--limit-chunks", type=int, help="Limit number of chunks", default=None)
@@ -55,12 +56,12 @@ def get_year_from_args():
     return [args.year,args.sample ]
 
 @click.command()
-@click.option('--cfg', required=True, type=str,
-              help='Config file with parameters specific to the current run')
+@click.option('--cfg', required=True, type=str,help='Config file with parameters specific to the current run')
 @click.option("-ro", "--custom-run-options", type=str, default=None, help="User provided run options .yaml file")
 @click.option("-o", "--outputdir", required=True, type=str, help="Output folder")
 @click.option("-y", "--year", required=True, type=str, help="year")
 @click.option("-sa", "--sample", required=True, type=str, help="sample name")
+@click.option("-li", "--llist", required=True, type=str, help="comma seperated list of sample names to process, in form of a string e.g. WW,ZZ with quotes ")
 @click.option("-t", "--test", is_flag=True, help="Run with limit 1 interactively")
 @click.option("-lf","--limit-files", type=int, help="Limit number of files")
 @click.option("-lc","--limit-chunks", type=int, help="Limit number of chunks", default=None)
@@ -73,7 +74,7 @@ def get_year_from_args():
 @click.option("--executor-custom-setup", type=str, help="Python module to be loaded as custom executor setup")
 def run(cfg,  custom_run_options, outputdir, test, limit_files,
            limit_chunks, executor, scaleout, chunksize,
-           queue, loglevel, full, executor_custom_setup, year, sample):
+           queue, loglevel, full, executor_custom_setup, year, sample, llist ):
     '''Run an analysis on NanoAOD files using PocketCoffea processors'''
 
     # Setting up the output dir
