@@ -34,34 +34,11 @@ def load_config(cfg, outputdir):
     return config
 
 
-def get_year_from_args():
-    parser = argparse.ArgumentParser(description='Run analysis on NanoAOD files using PocketCoffea processors')
-    # Inputs                                                                                                  
-    parser.add_argument("-c","--cfg", default=os.getcwd() + "/config/test.py", required=True, type=str,
-                        help='Config file with parameters specific to the current run')
-    parser.add_argument("-ro", "--custom-run-options", type=str, default=None, help="User provided run options .yaml file")
-    parser.add_argument("-o", "--outputdir", required=True, type=str, help="Output folder")
-    parser.add_argument("-y", "--year", required=True, type=str, help="year")
-    parser.add_argument("-sa", "--sample", required=True, type=str, help="sample name")
-    parser.add_argument("-li", "--llist", required=True, type=str, help="list of sample names to process")
-    parser.add_argument("-t", "--test", action="store_true", help="Run with limit 1 interactively")
-    parser.add_argument("-lf","--limit-files", type=int, help="Limit number of files")
-    parser.add_argument("-lc","--limit-chunks", type=int, help="Limit number of chunks", default=None)
-    parser.add_argument("-e","--executor", type=str,
-                        help="Overwrite executor from config (to be used only with the --test options)" )
-    parser.add_argument("-s","--scaleout", type=int, help="Overwrite scalout config" )
-    parser.add_argument("-ll","--loglevel", type=str, help="Logging level", default="INFO" )
-    parser.add_argument("-f","--full", action="store_true", help="Process all datasets at the same time", default=False )
-    args = parser.parse_args()
-    return [args.year,args.sample ]
-
 @click.command()
-@click.option('--cfg', required=True, type=str,help='Config file with parameters specific to the current run')
+@click.option('--cfg', required=True, type=str,
+              help='Config file with parameters specific to the current run')
 @click.option("-ro", "--custom-run-options", type=str, default=None, help="User provided run options .yaml file")
 @click.option("-o", "--outputdir", required=True, type=str, help="Output folder")
-@click.option("-y", "--year", required=True, type=str, help="year")
-@click.option("-sa", "--sample", required=True, type=str, help="sample name")
-@click.option("-li", "--llist", required=True, type=str, help="comma seperated list of sample names to process, in form of a string e.g. WW,ZZ with quotes ")
 @click.option("-t", "--test", is_flag=True, help="Run with limit 1 interactively")
 @click.option("-lf","--limit-files", type=int, help="Limit number of files")
 @click.option("-lc","--limit-chunks", type=int, help="Limit number of chunks", default=None)
@@ -74,15 +51,15 @@ def get_year_from_args():
 @click.option("--executor-custom-setup", type=str, help="Python module to be loaded as custom executor setup")
 def run(cfg,  custom_run_options, outputdir, test, limit_files,
            limit_chunks, executor, scaleout, chunksize,
-           queue, loglevel, full, executor_custom_setup, year, sample, llist ):
+           queue, loglevel, full, executor_custom_setup):
     '''Run an analysis on NanoAOD files using PocketCoffea processors'''
 
     # Setting up the output dir
     os.makedirs(outputdir, exist_ok=True)
     outfile = os.path.join(
-        outputdir,  "output_"+cfg[:-3] +"_" + sample +"_" + year + ".coffea"
+        outputdir, "output_{}.coffea"
     )
-    logfile = os.path.join(outputdir, "logfile" +cfg[:-3] +"_" + sample +"_" + year +  ".log")
+    logfile = os.path.join(outputdir, "logfile.log")
     # Prepare logging
     if (not setup_logging(console_log_output="stdout", console_log_level=loglevel, console_log_color=True,
                         logfile_file=logfile, logfile_log_level="info", logfile_log_color=False,
@@ -163,10 +140,12 @@ def run(cfg,  custom_run_options, outputdir, test, limit_files,
     # if site is known we can load the corresponding module
     elif site == "lxplus":
         from pocket_coffea.executors import executors_lxplus as executors_lib
-    elif site == "T3_PSI_CH":
-        from pocket_coffea.executors import executors_T3_PSI_CH as executors_lib
+    elif site == "T3_CH_PSI":
+        from pocket_coffea.executors import executors_T3_CH_PSI as executors_lib
     elif site == "purdue":
         from pocket_coffea.executors import executors_purdue as executors_lib
+    elif site == "DESY_NAF":
+        from pocket_coffea.executors import executors_DESY_NAF as executors_lib
     elif site == "casa":
         from pocket_coffea.executors import executors_casa as executors_lib
     else:
@@ -230,7 +209,12 @@ def run(cfg,  custom_run_options, outputdir, test, limit_files,
                          processor_instance=config.processor_instance)
             print(f"Saving output to {outfile.format(sample)}")
             save(output, outfile.format(sample))
-         
+            # Once processing is done, create the directory                                                                                                                                                 
+            directory_name = f"{outfile.format(sample)[:-7]}" #.coffea
+            os.mkdir(directory_name)
+            print(f"Directory '{directory_name}' created successfully.")
+
+            
     # Closing the executor if needed
     executor_factory.close()
 
