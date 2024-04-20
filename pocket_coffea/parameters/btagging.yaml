@@ -67,7 +67,7 @@ btagging:
       btagging_WP: 0.277
       bbtagging_algorithm: btagDDBvLV2
       bbtagging_algorithmOld: btagDDBvL
-      bbtagging_WP: 0.86
+      bbtagging_WP: 0. 0.0399
       bbtagging_WP_T: 0.3140
       bbtagging_WP_M: 0.1566
       bbtagging_WP_L: 0.0399      

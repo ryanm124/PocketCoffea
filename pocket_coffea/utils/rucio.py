@@ -35,6 +35,10 @@ def get_rucio_client():
 
 def get_xrootd_sites_map():
     sites_xrootd_access = defaultdict(dict)
+    # if the .sites_map exists then remove it
+    #if os.path.exists(".sites_map.json"):
+    #    os.remove(".sites_map.json")
+        
     if not os.path.exists(".sites_map.json"):
         print("Loading SITECONF info")
         sites = [
