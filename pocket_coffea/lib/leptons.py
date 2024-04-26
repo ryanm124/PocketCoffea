@@ -70,6 +70,56 @@ def get_dilepton(electrons, muons, transverse=False):
     return dileptons
     
 
+def get_Wcandidate(electrons, muons, MET, jets, transverse=False):
+
+    mfields = {
+        "pt": MET.pt,
+        "eta": ak.zeros_like(MET.pt),
+        "phi": MET.phi,
+        "mass": ak.zeros_like(MET.pt),
+        "charge": ak.zeros_like(MET.pt),
+    }
+
+    METs = ak.zip(mfields, with_name="PtEtaPhiMCandidate")
+
+    
+    fields = {
+        "pt": 0.,
+        "eta": 0.,
+        "phi": 0.,
+        "mass": 0.,
+        "charge": 0.,
+    }
+
+    leptons = ak.pad_none(ak.with_name(ak.concatenate([ muons[:, 0:2], electrons[:, 0:2]], axis=1), "PtEtaPhiMCandidate"), 2)
+    nlep =  ak.num(leptons[~ak.is_none(leptons, axis=1)])
+    l = leptons[:,0]# + leptons[:,1]
+
+    Wcand1 = l + METs
+
+    #Wcand2 = jets
+
+    for var in fields.keys():
+        fields[var] = ak.where(
+            (nlep == 2),
+            getattr(l, var),
+            fields[var]
+        )
+
+    fields["deltaR"] = ak.where(
+        (nlep == 2), leptons[:,0].delta_r(leptons[:,1]), -1)
+
+    if transverse:
+        fields["eta"] = ak.zeros_like(fields["pt"])
+    Wcand = ak.zip(fields, with_name="PtEtaPhiMCandidate")
+
+
+    return Wcand
+
+
+
+
+
 def get_diboson(dileptons, MET, transverse=False):
 
     fields = {
