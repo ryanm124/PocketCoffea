@@ -503,8 +503,13 @@ class BaseProcessorABC(processor.ProcessorABC, ABC):
                                                dataset=self._dataset,
                                                shape_variation=variation
                                                )
-                    fname = (self.events.behavior["__events_factory__"]._partition_key.replace( "/", "_" )
-                        + ".parquet")
+                    current_time = time.strftime("%Y%m%d%H%M%S")  # Get current timestamp THIS SOLVES non-unique file names issue
+                    #fname = (self.events.behavior["__events_factory__"]._partition_key.replace( "/", "_" )
+                    #    + ".parquet")
+                    fname = (
+                        self.events.behavior["__events_factory__"]._partition_key.replace("/", "_")
+                        + f"_{current_time}.parquet"  # Append timestamp to filename
+                        )                    
                     fname = fname.replace("%","#")
                     
                     for category, akarr in out_arrays.items():
