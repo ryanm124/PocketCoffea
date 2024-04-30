@@ -18,7 +18,7 @@ def lepton_selection(events, lepton_flavour, params):
         etaSC = abs(leptons.deltaEtaSC + leptons.eta)
         passes_SC = np.invert((etaSC >= 1.4442) & (etaSC <= 1.5660))
         #passes_iso = leptons.miniPFRelIso_chg < cuts["iso"]
-        passes_id = leptons[cuts['id']] == True
+        passes_id = leptons[cuts['id']] >= 4 # 4 = tight ID for cutBased  #== True
 
         good_leptons = passes_eta & passes_pt & passes_SC  & passes_id
 
@@ -69,8 +69,7 @@ def get_dilepton(electrons, muons, transverse=False):
     #dileptons = dileptons[mass_pass]
     return dileptons
     
-
-def get_Wcandidate(electrons, muons, MET, jets, transverse=False):
+def get_lepW(electrons, muons, MET, jets, fatjets, transverse=False):
 
     mfields = {
         "pt": MET.pt,
@@ -101,13 +100,34 @@ def get_Wcandidate(electrons, muons, MET, jets, transverse=False):
 
     for var in fields.keys():
         fields[var] = ak.where(
-            (nlep == 2),
+            (nlep >= 1),
             getattr(l, var),
             fields[var]
         )
 
-    fields["deltaR"] = ak.where(
-        (nlep == 2), leptons[:,0].delta_r(leptons[:,1]), -1)
+    jfields = {
+        "pt": jets.pt,
+        "eta": jets.eta ,
+        "phi": jets.phi,
+        "mass": jets.mass,
+        "charge": ak.zeros_like(jets.pt), 
+    }
+
+    JETs = ak.zip(jfields, with_name="PtEtaPhiMCandidate")
+
+    fjfields = {
+        "pt": fatjets.pt,
+        "eta": fatjets.eta ,
+        "phi": fatjets.phi,
+        "mass": fatjets.mass,
+        "charge": ak.zeros_like(fatjets.pt), 
+    }
+
+    FATJETs = ak.zip(fjfields, with_name="PtEtaPhiMCandidate")
+    
+        
+    #fields["deltaR"] = ak.where(
+    #    (Wcand1 != None), Wcand1[:].delta_r(FATJETs[:]), -1)
 
     if transverse:
         fields["eta"] = ak.zeros_like(fields["pt"])
@@ -116,7 +136,76 @@ def get_Wcandidate(electrons, muons, MET, jets, transverse=False):
 
     return Wcand
 
+# self.events.JetGood , self.events.nJetGood, self.events.nBJetGood 
+def get_hadW(jets , Bjets, fatjets, transverse=False):
+    # add a cut on >=2 NON B tagged jets
+    jfields = {
+        "pt": jets.pt,
+        "eta": jets.eta ,
+        "phi": jets.phi,
+        "mass": jets.mass,
+        "charge": ak.zeros_like(jets.pt),
+    }
 
+    JETs = ak.zip(jfields, with_name="PtEtaPhiMCandidate")
+    nJET =  ak.num(JETs[~ak.is_none(JETs, axis=1)])
+
+    bjfields = {
+        "pt": Bjets.pt,
+        "eta": Bjets.eta ,
+        "phi": Bjets.phi,
+        "mass": Bjets.mass,
+        "charge": ak.zeros_like(Bjets.pt),
+    }
+
+    BJETs = ak.zip(bjfields, with_name="PtEtaPhiMCandidate")
+    nBJET =  ak.num(BJETs[~ak.is_none(BJETs, axis=1)])
+
+    nonBjets = nJET - nBJET
+    Wcand2 = None
+    #if (nJET >=2   ):
+    #Wcand2 = JETs[:,0] +  JETs[:,1]
+    if len(JETs) >= 2:
+        Wcand2 = JETs[0] + JETs[1]
+    else:
+        # Handle the case when there are less than 2 jets
+        # For example, raise an error or set Wcand2 to None
+        Wcand2 = None  # or any other appropriate handling
+
+    fields = {
+        "pt": 0.,
+        "eta": 0.,
+        "phi": 0.,
+        "mass": 0.,
+        "charge": 0.,
+    }
+
+    #for var in fields.keys():
+    #    fields[var] = ak.where(
+    #        (Wcand2 != None),
+    #        getattr(Wcand2, var),
+    #       fields[var]
+    #        )
+        
+    fjfields = {
+	"pt": fatjets.pt,
+        "eta": fatjets.eta ,
+        "phi": fatjets.phi,
+        "mass": fatjets.mass,
+        "charge": ak.zeros_like(fatjets.pt), 
+    }
+
+    FATJETs = ak.zip(fjfields, with_name="PtEtaPhiMCandidate")
+        
+    #fields["deltaR"] = ak.where(
+    #    (Wcand2 != None), Wcand2[:].delta_r(FATJETs[:]), -1)
+
+    if transverse:
+        fields["eta"] = ak.zeros_like(fields["pt"])
+    Wcand = ak.zip(fields, with_name="PtEtaPhiMCandidate")
+
+
+    return Wcand
 
 
 

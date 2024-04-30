@@ -10,6 +10,8 @@ from ..lib.objects import (
     jet_selection,
     btagging,
     get_dilepton,
+    get_lepW,
+    get_hadW
 )
 
 
